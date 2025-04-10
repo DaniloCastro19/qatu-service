@@ -1,12 +1,10 @@
 import app from './app.js';
-import displayRoutes from 'express-routemap';
-
-
 const PORT = process.env.PORT || 3000;
+const API_PREFIX = "api";
+
 
 const server = app.listen(PORT, () => {
-    displayRoutes(app);
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}/${API_PREFIX}`);
 });
 
 export { server };
