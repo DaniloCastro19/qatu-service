@@ -22,12 +22,15 @@
   "homepage": "https://gitlab.com/jala-university1/cohort-2/oficial-es-desarrollo-de-software-4-cssd-245.ga.t1.25.m2/secci-n-a/union-sveltica/qatu-service#readme",
   "dependencies": {
     "express": "^5.1.0",
+    "mongodb": "^6.15.0",
+    "mongoose": "^8.13.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "babel-jest": "^29.7.0",
+    "express-routemap": "^1.6.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.9"
   }
