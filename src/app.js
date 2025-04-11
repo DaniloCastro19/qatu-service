@@ -2,6 +2,8 @@ import express from 'express';
 
 import expressListRoutes from 'express-list-routes';
 
+import userRoutes from './presentationLayer/routes/user.routes.js';
+
 
 
 
@@ -9,6 +11,7 @@ import expressListRoutes from 'express-list-routes';
 
 const app = express();
 app.use(express.json());
+app.use('/api/users', userRoutes);
 
 
 expressListRoutes(app);
