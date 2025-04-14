@@ -16,7 +16,12 @@ const userModel = new mongoose.Schema({
         type: String,
         enum: ['admin', 'seller', 'customer'],
         default: 'customer'
-      }
+      },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+    }
     }, { timestamps: true });
 
 export default mongoose.model('user', userModel);
