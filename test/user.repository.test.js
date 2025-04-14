@@ -24,7 +24,7 @@ describe('User Repository', () => {
     const user = await userRepository.createUser({
       name: 'Douglas',
       email: 'douglas@example.com',
-      age: 30
+      password: 'password123'
     });
 
     expect(user.name).toBe('Douglas');
@@ -35,7 +35,8 @@ describe('User Repository', () => {
   it('should find user by id', async () => {
     const newUser = await userRepository.createUser({
       name: 'Ana',
-      email: 'ana@example.com'
+      email: 'ana@example.com',
+      password: 'password123'
     });
 
     const foundUser = await userRepository.getUserById(newUser._id);
@@ -45,7 +46,8 @@ describe('User Repository', () => {
   it('should update user data', async () => {
     const user = await userRepository.createUser({
       name: 'Luis',
-      email: 'luis@example.com'
+      email: 'luis@example.com',
+      password: 'password123'
     });
 
     const updated = await userRepository.updateUser(user._id, { name: 'Luisito' });
@@ -55,7 +57,8 @@ describe('User Repository', () => {
   it('should delete user', async () => {
     const user = await userRepository.createUser({
       name: 'Pedro',
-      email: 'pedro@example.com'
+      email: 'pedro@example.com',
+      password: 'password123'
     });
 
     await userRepository.deleteUser(user._id);
@@ -67,7 +70,8 @@ describe('User Repository', () => {
     await expect(userRepository.createUser({
       name: 'Fake',
       email: 'fake@example.com',
-      role: 'hacker'
+      role: 'hacker',
+      password: 'password123'
     })).rejects.toThrow();
   });
 });
