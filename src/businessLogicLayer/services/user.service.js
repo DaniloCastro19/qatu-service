@@ -1,29 +1,23 @@
-import userRepository from '../dataAccessLayer/repositories/user.repository.js';
+import { userRepository } from '../../dataAccessLayer/repositories/user.repository.js';
 
-const getAllUsers = async () => {
-  return await userRepository.getAll();
-};
+export const userService = {
+  async getAllUsers() {
+    return await userRepository.getAllUsers();
+  },
 
-const getUserById = async (id) => {
-  return await userRepository.getById(id);
-};
+  async getUserById(id) {
+    return await userRepository.getUserById(id);
+  },
 
-const createUser = async (userData) => {
-  return await userRepository.create(userData);
-};
+  async createUser(userData) {
+    return await userRepository.createUser(userData);
+  },
 
-const updateUser = async (id, userData) => {
-  return await userRepository.update(id, userData);
-};
+  async updateUser(id, userData) {
+    return await userRepository.updateUser(id, userData);
+  },
 
-const deleteUser = async (id) => {
-  return await userRepository.remove(id);
-};
-
-export default {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser
+  async deleteUser(id) {
+    return await userRepository.remove(id);
+  }
 };
