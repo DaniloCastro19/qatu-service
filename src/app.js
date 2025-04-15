@@ -11,7 +11,7 @@ import productRoutes from './presentationLayer/routes/product.routes.js'
 
 const app = express();
 app.use(express.json());
-app.use('/api/products', productRoutes);
+app.use('/products', productRoutes);
 
 
 expressListRoutes(app);

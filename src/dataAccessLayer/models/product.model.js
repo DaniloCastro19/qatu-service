@@ -17,9 +17,12 @@ const productModel = new mongoose.Schema({
         required: true,
         trim: true
     },
-    vendor: {
-        type: User,
-        required: true,
+    category: {
+        type: String,
+        trim: true
+    },
+    vendorId: {
+        type: mongoose.Types.ObjectId,
         trim: true
     }
 });

@@ -21,6 +21,11 @@ export const productService = {
         return product;
     },
 
+    async patchProduct(id, data) {
+        const product = await productRepository.updateProduct(id, data);
+        return product;
+    },
+
     async deleteProduct(id) {
         const product = await productRepository.deleteProduct(id);
         return product;
