@@ -4,6 +4,10 @@ import expressListRoutes from 'express-list-routes';
 
 import userRoutes from './presentationLayer/routes/user.routes.js';
 
+import passport from '../src/presentationLayer/middlewares/AuthMiddleware.js';
+import { router } from './presentationLayer/routes/index.routes.js';
+
+
 
 
 
@@ -11,7 +15,8 @@ import userRoutes from './presentationLayer/routes/user.routes.js';
 
 const app = express();
 app.use(express.json());
-app.use('/api/users', userRoutes);
+app.use(passport.initialize())
+app.use('QatuService/v1',router)
 
 
 expressListRoutes(app);
