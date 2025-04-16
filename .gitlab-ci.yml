@@ -3,7 +3,7 @@ stages:
   - test
 
 variables:
-  COMPOSE_PROJECT_NAME: qatu-pipeline
+  COMPOSE_PROJECT_NAME: ci-project
   DOCKER_HOST: tcp//docker:2375/
   DOCKER_TLS_CERTDIR: ""
 
