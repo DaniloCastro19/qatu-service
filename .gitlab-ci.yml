@@ -39,7 +39,7 @@ build-app:
 test:
   stage: test
   script:
-    - docker-compose exec -T app npm run test
+    - docker-compose exec -T qatu-api npm run test
     - docker ps
   
   dependencies: 
