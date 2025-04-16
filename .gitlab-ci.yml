@@ -1,0 +1,48 @@
+stage:
+  - build
+  - test
+
+variables:
+  COMPOSE_PROJECT_NAME: qatu-pipeline
+  DOCKER_HOST: tcp//docker:2375/
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - docker:dind
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+
+before_script:
+  - apk add --no-cache docker-compose
+
+build-app:
+  stage: build
+  script:
+    - docker-compose -f docker-compose.yml up -d --build
+    - docker ps
+
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - .
+  
+  services:
+    - name: docker:dind
+      alias: docker
+
+
+test:
+  stage: test
+  script:
+    - docker-compose exec -T app npm run test
+    - docker ps
+  
+  dependencies: 
+    - build-app
+  
+  services:
+    - name: docker:dind
+      alias: docker
