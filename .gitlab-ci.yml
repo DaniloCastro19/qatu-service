@@ -2,49 +2,33 @@ stages:
   - build
   - test
 
-variables:
-  COMPOSE_PROJECT_NAME: ci-project
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_TLS_CERTDIR: ""
-
 image: node:20-alpine
 
 services:
-  - docker:dind
+  - name: docker:24-dind
+    alias: docker
+
+variables:
+  DOCKER_TLS_CERTDIR: ""
+
+before_script:
+  - apk add --no-cache docker-cli docker-cli-compose
 
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
 
-before_script:
-  - apk add --no-cache docker-compose
 
 build-app:
   stage: build
   script:
-    - docker-compose -f docker-compose.yml up -d --build
-    - docker ps
-
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - .
-  
-  services:
-    - name: docker:dind
-      alias: docker
+    - docker-compose build app
+    - docker-compose images
 
 
-test:
+test-app:
   stage: test
   script:
-    - docker-compose exec -T qatu-api npm run test
-    - docker ps
-  
-  dependencies: 
-    - build-app
-  
-  services:
-    - name: docker:dind
-      alias: docker
+    - docker-compose up -d mongo
+    - docker-compose run --rm app npm run test
