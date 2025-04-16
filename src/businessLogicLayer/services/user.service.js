@@ -18,6 +18,6 @@ export const userService = {
   },
 
   async deleteUser(id) {
-    return await userRepository.remove(id);
+    return await userRepository.deleteUser(id);
   }
 };
