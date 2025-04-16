@@ -34,6 +34,18 @@ build-app:
 
 test-app:
   stage: test
+  image: node:20
+  services:
+    - name: docker:24.0-dind
+      alias: docker
+
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  
+  before_script:
+    - apt-get update && apt-get install -y docker-compose
+
   script:
     - docker-compose up -d mongo
     - docker-compose run --rm app npm run test
