@@ -1,1 +1,1 @@
-export const API_PREFIX = "api";
+export const API_PREFIX = "/QatuService/v1";
