@@ -52,3 +52,36 @@ The output must be something like:
 `Server running on http://localhost:[PORT]/api`
 
 `Connected to DB client`
+
+### Implementation with environment variables (environments and .env)
+
+Make sure that for each variable added within the .env file, it must be sent to the environments file so it can be exported and used anywhere in the project. This also helps us define the values ​​for these same variables, for example:
+
+### venv:
+```
+PORT=3000
+CONNECTION_STRING=mongodb://localhost:27017/QatuDataBase
+JWT_SECRET=misecret
+```
+
+### environments
+```
+import 'dotenv/config';
+import env from 'env-var';
+
+export const envs = {
+  PORT: env.get('PORT').required().asPortNumber(),
+  CONNECTION_STRING: env.get('CONNECTION_STRING').required().asString(),
+  JWT_SECRET: env.get('JWT_SECRET').required().asString(),
+};
+```
+
+### Use Case
+```
+import app from './app.js';
+import dbClient from "./config/dbClient.js"
+import { envs } from './config/environments/environments.js';
+
+const PORT = envs.PORT || 3000;
+const API_PREFIX = "api";
+```
