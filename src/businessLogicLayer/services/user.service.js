@@ -1,4 +1,5 @@
 import { userRepository } from '../../dataAccessLayer/repositories/user.repository.js';
+import bcrypt from 'bcrypt';
 
 export const userService = {
   async getAllUsers() {
@@ -10,10 +11,21 @@ export const userService = {
   },
 
   async createUser(userData) {
-    return await userRepository.createUser(userData);
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(userData.password, saltRounds)
+    const userToCreate = {
+      ...userData,
+      password: hashedPassword
+    };
+
+    return await userRepository.createUser(userToCreate);
   },
 
   async updateUser(id, userData) {
+    if (userData.password) {
+      const saltRounds = 10;
+      userData.password = await bcrypt.hash(userData.password, saltRounds);
+    }
     return await userRepository.updateUser(id, userData);
   },
 
