@@ -4,6 +4,8 @@ import expressListRoutes from 'express-list-routes';
 
 import userRoutes from './presentationLayer/routes/user.routes.js';
 
+import { API_PREFIX } from './utils/constants.js';
+
 
 
 
@@ -11,7 +13,7 @@ import userRoutes from './presentationLayer/routes/user.routes.js';
 
 const app = express();
 app.use(express.json());
-app.use('/api/users', userRoutes);
+app.use(`/${API_PREFIX}/users`, userRoutes);
 
 
 expressListRoutes(app);

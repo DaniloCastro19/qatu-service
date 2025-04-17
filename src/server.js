@@ -1,7 +1,7 @@
 import app from './app.js';
-const PORT = process.env.PORT || 3000;
-const API_PREFIX = "api";
+import { API_PREFIX } from './utils/constants.js';
 
+const PORT = process.env.PORT || 3000;
 import dbClient from "./config/dbClient.js"
 
 const server = app.listen(PORT, () => {
