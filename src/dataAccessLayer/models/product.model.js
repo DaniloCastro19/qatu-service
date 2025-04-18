@@ -7,23 +7,28 @@ const productModel = new mongoose.Schema({
         required: true,
         trim: true
     },
+    description: {
+        type: String,
+        trim: true
+    },
+    imageUrl: {
+        type: String,
+        trim: true
+    },
     price: {
         type: Number,
-        required: true,
-        trim: true
+        required: true
     },
     amount: {
         type: Number,
-        required: true,
-        trim: true
+        required: true
     },
     category: {
         type: String,
         trim: true
     },
     vendorId: {
-        type: mongoose.Types.ObjectId,
-        trim: true
+        type: mongoose.Types.ObjectId
     }
 });
 
