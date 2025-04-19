@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
 import * as dotnev from 'dotenv';
+import { envs } from "./environments/environments.js";
 
 dotnev.config();
 
 
-const CONNECTION_STRING = process.env.CONNECTION_STRING;
+const CONNECTION_STRING = envs.CONNECTION_STRING;
 
 class DatabaseClient {
     constructor(){

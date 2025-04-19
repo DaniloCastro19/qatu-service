@@ -21,7 +21,8 @@ const userModel = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-    }
+    },
+    invalidateBefore: { type: Date, default: new Date(0) }
     }, { timestamps: true });
 
 export default mongoose.model('user', userModel);
