@@ -20,6 +20,16 @@ export const userRepository = {
   
     async deleteUser(id) {
       return await User.findByIdAndDelete(id);
+    },
+
+    async getUserByUsername(name) {
+      return await User.findOne({ name });
+    },
+
+    async updateInvalidateBefore(id, date) {
+      return await User.findByIdAndUpdate(id, {
+        invalidateBefore: date,
+      });
     }
   };
 

@@ -35,4 +35,22 @@ const jwtOptions = {
 
   passport.use(strategy);
 
+  export const authorizeRoles = (allowedRoles) => (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+      if (err || !user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+  
+      if (!allowedRoles.includes(user.role)) {
+        return res
+          .status(403)
+          .json({ message: 'Forbidden: Insufficient permissions' });
+      }
+  
+      req.user = user;
+      next();
+    })(req, res, next);
+  };
+  
+
   export default passport;
