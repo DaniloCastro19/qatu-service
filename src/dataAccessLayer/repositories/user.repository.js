@@ -2,23 +2,35 @@ import User from '../models/user.model.js';
 
 export const userRepository = {
     async getAllUsers() {
-      return User.find();
+      return await User.find();
     },
   
     async getUserById(id) {
-      return User.findById(id);
+      return await User.findById(id);
     },
   
     async createUser(data) {
       const user = new User(data);
-      return user.save();
+      return await user.save();
     },
   
     async updateUser(id, data) {
-      return User.findByIdAndUpdate(id, data, { new: true });
+      return await User.findByIdAndUpdate(id, data, { new: true });
     },
   
     async deleteUser(id) {
-      return User.findByIdAndDelete(id);
+      return await User.findByIdAndDelete(id);
+    },
+
+    async getUserByUsername(name) {
+      return await User.findOne({ name });
+    },
+
+    async updateInvalidateBefore(id, date) {
+      return await User.findByIdAndUpdate(id, {
+        invalidateBefore: date,
+      });
     }
   };
+
+  
