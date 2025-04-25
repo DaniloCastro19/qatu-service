@@ -1,4 +1,4 @@
-import { ErrorRepository } from "../../dataAccessLayer/repositories/error.repository";
+import { ErrorRepository } from "../../dataAccessLayer/repositories/error.repository.js";
 
 export class LogErrorUseCase {
     constructor() {

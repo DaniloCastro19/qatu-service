@@ -29,6 +29,7 @@ const sendErrorProd = async (err, res) => {
     status: err.status,
     stack: err.stack,
   };
+
   console.log('Logging error to DB:', errorData);
   await logErrorUseCase.execute(errorData);
 
