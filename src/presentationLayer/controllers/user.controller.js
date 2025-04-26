@@ -1,5 +1,6 @@
 import { userService } from '../../businessLogicLayer/services/user.service.js';
 import { catchAsync } from '../../businessLogicLayer/errors/catchAsync.js';
+import { AppError } from '../../businessLogicLayer/errors/error.js';
 export const userController = {
   getAll: catchAsync(async (req, res, next) => {
     const users = await userService.getAllUsers();
@@ -8,7 +9,7 @@ export const userController = {
 
   getById: catchAsync(async (req, res, next) => {
     const user = await userService.getUserById(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return next(new AppError(404, 'User not found'));
     res.status(200).json({ message: 'User retrieved', data: user });
   }),
 
@@ -19,13 +20,13 @@ export const userController = {
 
   update: catchAsync(async (req, res, next) => {
     const updatedUser = await userService.updateUser(req.params.id, req.body);
-    if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+    if (!updatedUser) return next(new AppError(404, 'User not found'));
     res.status(200).json({ message: 'User updated', data: updatedUser });
   }),
 
   delete: catchAsync(async (req, res, next) => {
     const deletedUser = await userService.deleteUser(req.params.id);
-    if (!deletedUser) return res.status(404).json({ message: 'User not found' });
+    if (!deletedUser) return next(new AppError(404, 'User not found'));
     res.status(200).json({ message: 'User deleted' });
   })
 

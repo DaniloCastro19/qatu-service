@@ -7,7 +7,7 @@ export const productService = {
     },
 
     async getProductbyId(id) {
-        const product = await productRepository.getProductById();
+        const product = await productRepository.getProductById(id);
         return product;
     },
 
