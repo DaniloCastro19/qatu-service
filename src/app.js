@@ -2,11 +2,11 @@ import express from 'express';
 import dbClient from "./config/dbClient.js"
 import passport from '../src/presentationLayer/middlewares/AuthMiddleware.js';
 import { router } from './presentationLayer/routes/index.routes.js';
-import { API_PREFIX } from './utils/constants.js';
 import { envs } from './config/environments/environments.js';
 import cors from 'cors';
 import { AppError } from './businessLogicLayer/errors/error.js';
-import { globalErrorHandler } from './utils/globalErrorHandler.js';
+import { globalErrorHandler } from './helpers/globalErrorHandler.js';
+export const API_PREFIX = "/QatuService/v1";
 
 
 const app = express();
