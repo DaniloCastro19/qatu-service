@@ -1,63 +1,41 @@
 import { productService } from "../../businessLogicLayer/services/product.service.js";
+import { catchAsync } from "../../businessLogicLayer/errors/catchAsync.js";
+import { AppError } from '../../businessLogicLayer/errors/error.js';
+
 
 export const productController = {
-    async getAllProducts(req, res, next) {
-        try {
-            const products = await productService.getAllUsers();
+    getAllProducts: catchAsync(async (req, res, next) => {
+        const products = await productService.getAllProducts();
+        res.status(200).json({message: 'Products retrieved', data: products});
+    }),
 
-            res.status(200).json(products);
-        } catch (error) {
-          res.status(500).json({ message: error.message });
-        }
-    },
+     getProductById: catchAsync (async (req, res, next) => {
+        const product = await productService.getProductbyId(req.params.id);
+        if (!product) return next(new AppError(404, 'Product not found'));
+        res.status(200).json(product);
+    }),
 
+     createProduct: catchAsync(async (req, res, next) => {
+        const product = await productService.createProduct(req.body);
+        if (!product) return next(new AppError(400, 'Product creation failed'));
+        res.status(201).json(product);
+        }),
 
-    async getProductById(req, res, next) {
-        try {
-            const product = await productService.getProductbyId(req.params.id);
-            if (!product) return res.status(404).json({ message: 'Product not found' });
-            res.status(200).json(product);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    },
+    updateProduct: catchAsync(async (req, res, next) => {
+        const updatedProduct = await productService.updateProduct(req.params.id, req.body);
+        if (!updatedProduct) return next(new AppError(404, 'Product not found'));
+        res.status(200).json(updatedProduct);
+        }),
 
-    async createProduct(req, res, next) {
-        try {
-            const product = await productService.createProduct(req.body);
-            res.status(201).json(product);
-        } catch (error) {
-            res.status(400).json({ message: error.message });
-        }
-    },
-
-    async updateProduct(req, res, next) {
-        try {
-            const updatedProduct = await productService.updateProduct(req.params.id, req.body);
-            if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
-            res.status(200).json(updatedProduct);
-        } catch (error) {
-            res.status(400).json({ message: error.message });
-        }
-    },
-
-    async patchProduct(req, res, next) {
-        try {
-            const updatedProduct = await productService.patchProduct(req.params.id, req.body);
-            if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
-            res.status(200).json(updatedProduct);
-        } catch (error) {
-            res.status(400).json({ message: error.message });
-        }
-    },
+    patchProduct: catchAsync(async(req, res, next)=>{
+        const updatedProduct = await productService.patchProduct(req.params.id, req.body);
+        if (!updatedProduct) return next(new AppError(404, 'Product not found'));
+        res.status(200).json(updatedProduct);
+    }),
     
-    async deleteProduct(req, res) {
-        try {
-            const deletedProduct = await productService.deleteProduct(req.params.id);
-            if (!deletedProduct) return res.status(404).json({ message: 'Product not found' });
-            res.status(200).json({ message: 'Product deleted' });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
+    deleteProduct: catchAsync(async(req, res,next) => {
+        const deletedProduct = await productService.deleteProduct(req.params.id);
+        if (!deletedProduct) return next(new AppError(404, 'Product not found'));
+        res.status(200).json({ message: 'Product deleted' });
+    })
 };
