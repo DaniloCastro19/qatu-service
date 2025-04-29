@@ -26,6 +26,10 @@ export const userRepository = {
       return await User.findOne({ name });
     },
 
+    async getUserByEmail(email) {
+      return await User.findOne({ email });
+    },
+
     async updateInvalidateBefore(id, date) {
       return await User.findByIdAndUpdate(id, {
         invalidateBefore: date,

@@ -2,8 +2,8 @@ import { userRepository } from "../../dataAccessLayer/repositories/user.reposito
 import jwtService from "./jwt.service.js";
 
 export const loginService = {
-  async execute(username, password) {
-    const user = await userRepository.getUserByUsername(username);
+  async execute(email, password) {
+    const user = await userRepository.getUserByEmail(email);
     if (!user || !(await jwtService.verifyPassword(password, user.password))) {
       throw new Error('Invalid credentials');
     }
