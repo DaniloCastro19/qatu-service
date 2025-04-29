@@ -4,8 +4,8 @@ catchAsync
 
 export const authenticationController = {
   login: catchAsync(async (req, res, next) => {
-    const { username, password } = req.body;
-    const result = await loginService.execute(username, password);
+    const { email, password } = req.body;
+    const result = await loginService.execute(email, password);
     res.status(200).json({
       message: 'Login successful',
       data: result
