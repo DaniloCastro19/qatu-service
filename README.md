@@ -17,6 +17,8 @@ git clone [URL | SSH]
 ```
 ### Dependency installation
 
+On **qatu-service** project folder:
+
 ```
 npm install
 ```
@@ -85,3 +87,7 @@ import { envs } from './config/environments/environments.js';
 const PORT = envs.PORT || 3000;
 const API_PREFIX = "api";
 ```
+
+### Wiki
+
+You can find more information in the [project Wiki.](https://gitlab.com/groups/jala-university1/cohort-2/oficial-es-desarrollo-de-software-4-cssd-245.ga.t1.25.m2/secci-n-a/union-sveltica/-/wikis/home)
