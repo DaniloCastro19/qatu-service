@@ -1,5 +1,7 @@
 import { userRepository } from "../../dataAccessLayer/repositories/user.repository.js";
 import jwtService from "./jwt.service.js";
+import bcrypt from 'bcrypt';
+
 
 export const loginService = {
   async execute(email, password) {
@@ -11,6 +13,30 @@ export const loginService = {
     return { token, user };
   }
 };
+
+
+export const registerService = {
+  async execute(userData) {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(userData.password, saltRounds)
+    const userToCreate = {
+      ...userData,
+      password: hashedPassword
+    };
+
+    return await userRepository.createUser(userToCreate);
+  },
+
+  async getUserByEmail(email) {
+      return await userRepository.getUserByEmail(email);
+    },
+
+  async getUserByUsername(username) {
+      return await userRepository.getUserByUsername(username);
+  },
+  
+};
+
 
 export const logoutService = {
   async execute(userId) {
