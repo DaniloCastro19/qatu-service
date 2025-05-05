@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - lab1
 
 image: docker:24.0
 
@@ -49,3 +50,8 @@ test-app:
   script:
     - docker-compose up -d mongo
     - docker-compose run --rm app npm run test
+
+lab1-devops:
+  stage: lab1
+  script:
+    - echo "Hello World!"
