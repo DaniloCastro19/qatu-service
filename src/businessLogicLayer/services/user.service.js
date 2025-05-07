@@ -1,6 +1,7 @@
 import { userRepository } from '../../dataAccessLayer/repositories/user.repository.js';
 import bcrypt from 'bcrypt';
 
+
 export const userService = {
   async getAllUsers() {
     return await userRepository.getAllUsers();

@@ -14,6 +14,30 @@ export const loginService = {
   }
 };
 
+
+export const registerService = {
+  async execute(userData) {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(userData.password, saltRounds)
+    const userToCreate = {
+      ...userData,
+      password: hashedPassword
+    };
+
+    return await userRepository.createUser(userToCreate);
+  },
+
+  async getUserByEmail(email) {
+      return await userRepository.getUserByEmail(email);
+    },
+
+  async getUserByUsername(username) {
+      return await userRepository.getUserByUsername(username);
+  },
+  
+};
+
+
 export const logoutService = {
   async execute(userId) {
     await userRepository.updateInvalidateBefore(userId, new Date());
