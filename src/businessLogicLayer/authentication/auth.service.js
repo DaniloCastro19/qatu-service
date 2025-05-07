@@ -1,5 +1,7 @@
 import { userRepository } from "../../dataAccessLayer/repositories/user.repository.js";
 import jwtService from "./jwt.service.js";
+import bcrypt from 'bcrypt';
+
 
 export const loginService = {
   async execute(email, password) {
