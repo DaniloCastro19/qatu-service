@@ -1,6 +1,7 @@
 import { userService } from '../../businessLogicLayer/services/user.service.js';
 import { catchAsync } from '../../businessLogicLayer/errors/catchAsync.js';
 import { AppError } from '../../businessLogicLayer/errors/error.js';
+
 export const userController = {
   getAll: catchAsync(async (req, res, next) => {
     const users = await userService.getAllUsers();
@@ -13,11 +14,7 @@ export const userController = {
     res.status(200).json({ message: 'User retrieved', data: user });
   }),
 
-  create: catchAsync(async (req, res, next) => {
-    const newUser = await userService.createUser(req.body);
-    res.status(201).json({ message: 'User created', data: newUser });
-  }),
-
+  
   update: catchAsync(async (req, res, next) => {
     const updatedUser = await userService.updateUser(req.params.id, req.body);
     if (!updatedUser) return next(new AppError(404, 'User not found'));
