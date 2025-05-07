@@ -35,6 +35,11 @@ CONNECTION_STRING=mongodb://localhost:27017/DB_NAME
 
 Feel free to replace "DB_NAME" with any other name you want for the database, is up to you.
 
+### Run the app with docker:
+```
+sudo docker run -d   -p 3000:3000   --env-file .env   --name qatu-api   qatu-api
+```
+
 ### Run development services
 
 ```
