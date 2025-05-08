@@ -6,7 +6,11 @@ export const router = express.Router();
 router.get('/', userController.getAll);
 router.get('/:id', userController.getById);
 router.post('/', userController.create);
-router.put('/:id', userController.update);
-router.delete('/:id', userController.delete);
+router.put('/:id', 
+    authorizeRoles(['admin', 'seller', 'customer']), // Nice To Have: If a personal profile edit feature is added to the store, this endpoint should be split in two, to only allow a user to update their own info.
+    userController.update);
+router.delete('/:id', 
+    authorizeRoles(['admin']),
+    userController.delete);
 
 export default router;
