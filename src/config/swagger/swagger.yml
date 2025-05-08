@@ -1,0 +1,512 @@
+openapi: '3.0.0'
+info:
+  title: 'Cozy Spot API'
+  version: '1.0.0'
+  description: 'API to manage users, products .'
+servers:
+  - url: 'http://localhost:3000/QatuService/v1'
+    description: 'Local server'
+paths:
+  /users:
+    get:
+      summary: 'Get a list of users'
+      description: 'Returns a list of users.'
+      tags:
+        - 'Users'
+      responses:
+        200:
+          description: 'List of users successfully retrieved.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+    post:
+      summary: 'Create a new user'
+      description: 'Allows the creation of a new user in the system.'
+      tags:
+        - 'Users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        201:
+          description: 'User successfully created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /users/{id}:
+    put:
+      summary: 'Update a user'
+      description: "Allows updating an existing user's information."
+      tags:
+        - 'Users'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the user to update.'
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStatusUpdate'
+      responses:
+        200:
+          description: 'User successfully updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    delete:
+      summary: 'Delete a user'
+      description: 'Allows deleting an existing user by its ID.'
+      tags:
+        - 'Users'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the user to delete.'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'User successfully deleted.'
+    get:
+      summary: 'Get a of user'
+      description: 'Returns user.'
+      tags:
+        - 'Users'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the user to get.'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'User successfully.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /products:
+    get:
+      summary: 'Get a list of products'
+      description: 'Returns a list of products.'
+      tags:
+        - 'Products'
+      responses:
+        200:
+          description: 'List of products successfully retrieved.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+    post:
+      summary: 'create the products'
+      description: 'Allows the creation of a new product in the system.'
+      tags:
+        - 'Products'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        201:
+          description: 'Create products successfully retrieved.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+  /products/{id}:
+    get:
+      summary: 'Get a of products'
+      description: 'Returns product'
+      tags:
+        - 'Products'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the product to get.'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'product successfully.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+    put:
+      summary: 'Update a priduct'
+      description: "Allows updating an existing product's information."
+      tags:
+        - 'Products'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the product to update.'
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        200:
+          description: 'Product successfully updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+    delete:
+      summary: 'Delete a product'
+      description: 'Allows deleting an existing product by its ID.'
+      tags:
+        - 'Products'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the product to delete.'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'product successfully deleted.'
+      
+  /auth/login:
+    post:
+      summary: 'User login'
+      description: 'Authenticate a user and return a JWT token.'
+      tags:
+        - 'Auth'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: 'Login successful'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        401:
+          description: 'Invalid credentials'
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout the user
+      description: Invalidates the current JWT token (logout). The token must be sent in the Authorization header as Bearer.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out successfully
+        '401':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+  /auth/refreshToken:
+    post:
+      tags:
+        - Auth
+      summary: Refresh JWT token
+      description: Generates a new JWT token from a valid token sent in the Authorization header as Bearer.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Token refreshed
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '401':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "6803cc3ad79d480a3422194b"
+        name:
+          type: string
+          example: "Joel Pérez"
+        email:
+          type: string
+          format: email
+          example: "Joel.perez@example.com"
+        role:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "$2b$10$OXI1XRmabfeAf/rgShpDletAEZV2AzPosCMEnYp9/kCZ.cSIkqLZ."
+        invalidateBefore:
+          type: string
+          format: date-time
+          example: "1970-01-01T00:00:00.000Z"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-04-19T16:15:54.647Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-04-19T16:15:54.647Z"
+        __v:
+          type: integer
+          example: 0
+    UserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - role
+        - password
+      properties:
+        name:
+          type: string
+          example: Aldo Condori
+        email:
+          type: string
+          format: email
+          example: Aldo.condori@jalasoft.com
+        role:
+          type: string
+          enum: [admin, user, guest]
+          example: admin
+        password:
+          type: string
+          format: password
+          example: aldo123
+    UserStatusUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Aldo Handlersss
+        email:
+          type: string
+          format: email
+          example: Joel.perez@example.com
+        role:
+          type: string
+          enum: [admin, user, guest]
+          example: admin
+        password:
+          type: string
+          format: password
+          example: $2b$10$OXI1XRmabfeAf/rgShpDletAEZV2AzPosCMEnYp9/kCZ.cSIkqLZ.
+      additionalProperties: false 
+    ProductRequest:
+      type: object
+      required:
+        - name
+        - description
+        - imageUrl
+        - price
+        - amount
+        - category
+        - vendorId
+      properties:
+        name:
+          type: string
+          example: Aldo Handler
+        description:
+          type: string
+          example: mi descripcion
+        imageUrl:
+          type: string
+          example: imagen/url
+        price:
+          type: number
+          example: 34
+        amount:
+          type: integer
+          example: 34
+        category:
+          type: string
+          example: Sodas
+        vendorId:
+          type: string
+          example: 68194fdd262185e14c3506f6
+    ProductResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6819706802faa39909e2a371
+        name:
+          type: string
+          example: Aldo Handler
+        description:
+          type: string
+          example: mi descripcion
+        imageUrl:
+          type: string
+          example: imagen/url
+        price:
+          type: number
+          example: 34
+        amount:
+          type: integer
+          example: 34
+        category:
+          type: string
+          example: Sodas
+        vendorId:
+          type: string
+          example: 68194fdd262185e14c3506f6
+        __v:
+          type: integer
+          example: 0
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Aldo Handler
+        description:
+          type: string
+          example: mi descripcion
+        imageUrl:
+          type: string
+          example: imagen/url
+        price:
+          type: number
+          example: 34
+        amount:
+          type: integer
+          example: 34
+        category:
+          type: string
+          example: Sodas
+        vendorId:
+          type: string
+          example: 68194fdd262185e14c3506f6
+      additionalProperties: false
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: Aldo.cruz@jalasoft.com
+        password:
+          type: string
+          format: password
+          example: aldo123
+      required:
+        - email
+        - password
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login successful
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+            user:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  example: 68194fdd262185e14c3506f6
+                name:
+                  type: string
+                  example: Juan Cruz
+                email:
+                  type: string
+                  format: email
+                  example: Aldo.cruz@jalasoft.com
+                role:
+                  type: string
+                  enum: [admin, user, guest]
+                  example: admin
+                password:
+                  type: string
+                  format: password
+                  example: $2b$10$...
+                invalidateBefore:
+                  type: string
+                  format: date-time
+                  example: 1970-01-01T00:00:00.000Z
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: 2025-05-05T23:55:09.201Z
+                updatedAt:
+                  type: string
+                  format: date-time
+                  example: 2025-05-05T23:55:09.201Z
+                __v:
+                  type: integer
+                  example: 0
