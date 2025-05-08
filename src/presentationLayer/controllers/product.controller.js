@@ -5,7 +5,8 @@ import { AppError } from '../../businessLogicLayer/errors/error.js';
 
 export const productController = {
     getAllProducts: catchAsync(async (req, res, next) => {
-        const products = await productService.getAllProducts();
+        const {page=1, limit=10} = req.query;
+        const products = await productService.getAllProducts(page,limit);
         res.status(200).json({message: 'Products retrieved', data: products});
     }),
 
