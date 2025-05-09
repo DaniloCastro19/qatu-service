@@ -15,6 +15,7 @@ router.post(
   authorizeRoles(['client', 'admin']),
   authenticationController.logout
 );
+
 router.post(
   '/refreshToken',
   passport.authenticate('jwt', { session: false }),

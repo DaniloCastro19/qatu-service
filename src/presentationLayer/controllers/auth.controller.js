@@ -1,4 +1,4 @@
-import { loginService, logoutService, registerService , refreshTokenService } from "../../businessLogicLayer/authentication/auth.service.js";
+import { loginService, logoutService, refreshTokenService } from "../../businessLogicLayer/authentication/auth.service.js";
 import { catchAsync } from "../../businessLogicLayer/errors/catchAsync.js";
 import { authValidators } from './../../businessLogicLayer/authentication/auth.validators.js';
 import { AppError } from '../../businessLogicLayer/errors/error.js';
