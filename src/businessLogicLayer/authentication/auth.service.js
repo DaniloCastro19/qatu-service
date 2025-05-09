@@ -17,7 +17,9 @@ export const loginService = {
 
 export const logoutService = {
   async execute(userId) {
-    await userRepository.updateInvalidateBefore(userId, new Date());
+    const userLogout = await userRepository.updateInvalidateBefore(userId, new Date());
+    return userLogout;
+
   }
 };
 
