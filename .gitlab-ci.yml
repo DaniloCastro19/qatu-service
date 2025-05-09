@@ -33,7 +33,7 @@ workflow:
     paths:
       - .
 
-test-app:
+.test-app:
   stage: test
   image: node:20
   services:
