@@ -29,5 +29,11 @@ export const productService = {
     async deleteProduct(id) {
         const product = await productRepository.deleteProduct(id);
         return product;
+    },
+    async getOrderedProducts(orderBy, ascending) {
+        const sortField = orderBy ? 'name' : 'price';
+        const sortOrder = ascending ? 1 : -1;
+
+        return await productRepository.getOrderedProducts(sortField, sortOrder);
     }
 };

@@ -37,5 +37,12 @@ export const productController = {
         const deletedProduct = await productService.deleteProduct(req.params.id);
         if (!deletedProduct) return next(new AppError(404, 'Product not found'));
         res.status(200).json({ message: 'Product deleted' });
+    }),
+    getOrderedProducts: catchAsync(async(req, res, next) => {
+        const orderBy = req.query.name === 'true';
+        const ascending = req.query.asce === 'true';
+        
+        const products = await productService.getOrderedProducts(orderBy, ascending);
+        res.status(200).json({ data: products });
     })
 };

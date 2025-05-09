@@ -25,5 +25,8 @@ export const productRepository = {
   
     async deleteProduct(id) {
       return Product.findByIdAndDelete(id);
+    },
+    async getOrderedProducts(field, order) {
+      return await Product.find().sort({ [field]: order });
     }
   };
