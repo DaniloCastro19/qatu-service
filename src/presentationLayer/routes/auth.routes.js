@@ -9,13 +9,13 @@ router.post('/login', authenticationController.login);
 router.post(
   '/logout',
   passport.authenticate('jwt', { session: false }),
-  authorizeRoles(['client', 'admin', 'seller', 'customer']),
+  authorizeRoles(['admin', 'seller', 'customer']),
   authenticationController.logout
 );
 router.post(
   '/refreshToken',
   passport.authenticate('jwt', { session: false }),
-  authorizeRoles(['client', 'admin', 'admin', 'seller', 'customer']),
+  authorizeRoles(['admin', 'seller', 'customer']),
   authenticationController.refreshToken
 );
 
