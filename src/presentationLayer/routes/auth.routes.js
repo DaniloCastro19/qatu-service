@@ -12,14 +12,14 @@ router.post('/login', validateAuthRequest('login'), authenticationController.log
 router.post(
   '/logout',
   passport.authenticate('jwt', { session: false }),
-  authorizeRoles(['client', 'admin']),
+  authorizeRoles(['customer', 'admin', 'seller']),
   authenticationController.logout
 );
 
 router.post(
   '/refreshToken',
   passport.authenticate('jwt', { session: false }),
-  authorizeRoles(['client', 'admin']),
+  authorizeRoles(['customer', 'admin', 'seller']),
   authenticationController.refreshToken
 );
 
