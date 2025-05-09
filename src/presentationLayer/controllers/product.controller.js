@@ -9,13 +9,13 @@ export const productController = {
         res.status(200).json({message: 'Products retrieved', data: products});
     }),
 
-     getProductById: catchAsync (async (req, res, next) => {
+    getProductById: catchAsync (async (req, res, next) => {
         const product = await productService.getProductbyId(req.params.id);
         if (!product) return next(new AppError(404, 'Product not found'));
         res.status(200).json(product);
     }),
 
-     createProduct: catchAsync(async (req, res, next) => {
+    createProduct: catchAsync(async (req, res, next) => {
         const product = await productService.createProduct(req.body);
         if (!product) return next(new AppError(400, 'Product creation failed'));
         res.status(201).json(product);
