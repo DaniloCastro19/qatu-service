@@ -1,8 +1,13 @@
 import Product from '../models/product.model.js';
 
 export const productRepository = {
-    async getAllProducts() {
-      return Product.find();
+
+    async getAllProducts(page, limit) {
+      const options = {
+        page:page,
+        limit:limit
+      }
+      return Product.paginate({},options);
     },
   
     async getProductById(id) {
