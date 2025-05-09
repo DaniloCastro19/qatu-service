@@ -5,9 +5,14 @@ import { AppError } from '../../businessLogicLayer/errors/error.js';
 
 export const productController = {
     getAllProducts: catchAsync(async (req, res, next) => {
-        const {page=1, limit=10} = req.query;
-        const products = await productService.getAllProducts(page,limit);
-        res.status(200).json({message: 'Products retrieved', data: products});
+        const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const orderBy = req.query.name === 'true';   // true = name, false = price
+    const ascending = req.query.asce === 'true'; // true = asc, false = desc
+
+    const products = await productService.getAllProducts(page, limit, orderBy, ascending);
+    res.status(200).json({ message: 'Products retrieved', data: products });
     }),
 
      getProductById: catchAsync (async (req, res, next) => {
@@ -38,12 +43,5 @@ export const productController = {
         const deletedProduct = await productService.deleteProduct(req.params.id);
         if (!deletedProduct) return next(new AppError(404, 'Product not found'));
         res.status(200).json({ message: 'Product deleted' });
-    }),
-    getOrderedProducts: catchAsync(async(req, res, next) => {
-        const orderBy = req.query.name === 'true';
-        const ascending = req.query.asce === 'true';
-        
-        const products = await productService.getOrderedProducts(orderBy, ascending);
-        res.status(200).json({ data: products });
     })
 };
