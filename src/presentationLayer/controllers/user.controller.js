@@ -1,6 +1,9 @@
 import { userService } from '../../businessLogicLayer/services/user.service.js';
 import { catchAsync } from '../../businessLogicLayer/errors/catchAsync.js';
 import { AppError } from '../../businessLogicLayer/errors/error.js';
+import { authValidators } from './../../businessLogicLayer/authentication/auth.validators.js';
+
+
 
 export const userController = {
   getAll: catchAsync(async (req, res, next) => {
@@ -9,8 +12,9 @@ export const userController = {
   }),
 
 
-
-    register: catchAsync(async (req, res, next) => {
+    register:[
+    ...authValidators.register,
+    catchAsync(async (req, res, next) => {
       const emailExists = await userService.getUserByEmail(req.body.email);
       if (emailExists) return next(new AppError(400, 'Email already in use'));
       if (req.body.name) {
@@ -19,7 +23,8 @@ export const userController = {
       }
         const newUser = await userService.registerService(req.body);
       if (!newUser) return next(new AppError(400, 'Registration failed'));
-        res.status(201).json({
+        res.status(201).json(
+        {
         status: 'success',
         message: 'User registered successfully',
         data: {
@@ -29,7 +34,7 @@ export const userController = {
           role: newUser.role
         }
       });
-  }),
+  })],
   
 
   getById: catchAsync(async (req, res, next) => {
