@@ -20,28 +20,6 @@ export const authenticationController = {
   ],
 
 
-  register: catchAsync(async (req, res, next) => {
-    const emailExists = await registerService.getUserByEmail(req.body.email);
-    if (emailExists) return next(new AppError(400, 'Email already in use'));
-    if (req.body.name) {
-      const usernameExists = await registerService.getUserByUsername(req.body.name);
-      if (usernameExists) return next(new AppError(400, 'Username already taken'));
-    }
-      const newUser = await registerService.execute(req.body);
-    if (!newUser) return next(new AppError(400, 'Registration failed'));
-      res.status(201).json({
-      status: 'success',
-      message: 'User registered successfully',
-      data: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role
-      }
-    });
-}),
-
-
   logout: catchAsync(async (req, res, next) => {
     const result = await logoutService.execute(req.user.id);
     if (!result) return next(new AppError(500, 'Logout failed'));
