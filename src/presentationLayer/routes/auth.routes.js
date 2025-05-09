@@ -8,7 +8,6 @@ import { validateAuthRequest } from '../middlewares/validation.middleware.js';
 export const router = express.Router();
 
 router.post('/login', validateAuthRequest('login'), authenticationController.login);
-router.post('/register', validateAuthRequest('register'), authenticationController.register);
 
 router.post(
   '/logout',
