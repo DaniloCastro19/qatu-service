@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - pull
 
 image: docker:24.0
 
@@ -21,7 +22,7 @@ workflow:
       when: always
 
 
-build-app:
+.build-app:
   stage: build
   script:
     - docker-compose build app
@@ -49,3 +50,11 @@ test-app:
   script:
     - docker-compose up -d mongo
     - docker-compose run --rm app npm run test
+
+pull-image:
+  stage: pull
+  before_script:
+  - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE"
+    - docker push "$CI_REGISTRY_IMAGE"
