@@ -2,12 +2,12 @@ import Product from '../models/product.model.js';
 
 export const productRepository = {
 
-    async getAllProducts(page, limit) {
-      const options = {
-        page:page,
-        limit:limit
-      }
-      return Product.paginate({},options);
+    async getAllProducts(page, limit, sortField, sortOrder) {
+      const skip = (page - 1) * limit;
+      return await Product.find()
+        .sort({ [sortField]: sortOrder })
+        .skip(skip)
+        .limit(limit);
     },
   
     async getProductById(id) {
