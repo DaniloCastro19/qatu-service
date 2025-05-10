@@ -1,8 +1,8 @@
 import { productRepository } from "../../dataAccessLayer/repositories/product.repository.js"
 
 export const productService = {
-    async getAllProducts() {
-        const products = await productRepository.getAllProducts();
+    async getAllProducts(page, limit) {
+        const products = await productRepository.getAllProducts(page,limit);
         return products;
     },
 
