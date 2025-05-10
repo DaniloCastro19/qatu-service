@@ -1,7 +1,6 @@
 stages:
-  - build
   - test
-  - pull
+  - push
 
 image: docker:24.0
 
@@ -21,19 +20,7 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
 
-
-.build-app:
-  stage: build
-  script:
-    - docker-compose build app
-    - docker images
-
-  artifacts:
-    expire_in: 1h
-    paths:
-      - .
-
-.test-app:
+test-app:
   stage: test
   image: node:20
   services:
@@ -51,8 +38,8 @@ workflow:
     - docker-compose up -d mongo
     - docker-compose run --rm app npm run test
 
-pull-image:
-  stage: pull
+push-image:
+  stage: push
   script:
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
     - docker build -t "$CI_REGISTRY_IMAGE:latest" .
