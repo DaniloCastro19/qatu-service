@@ -54,6 +54,6 @@ workflow:
 pull-image:
   stage: pull
   script:
-    - docker login registry.gitlab.com -u $LOGIN_USER -p $LOGIN_PASSWORD
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
     - docker build -t "$CI_REGISTRY_IMAGE:latest" .
     - docker push "$CI_REGISTRY_IMAGE:latest"
