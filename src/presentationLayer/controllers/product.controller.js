@@ -9,13 +9,13 @@ export const productController = {
         res.status(200).json({message: 'Products retrieved', data: products});
     }),
 
-     getProductById: catchAsync (async (req, res, next) => {
+    getProductById: catchAsync (async (req, res, next) => {
         const product = await productService.getProductbyId(req.params.id);
         if (!product) return next(new AppError(404, 'Product not found'));
         res.status(200).json(product);
     }),
 
-     createProduct: catchAsync(async (req, res, next) => {
+    createProduct: catchAsync(async (req, res, next) => {
         const product = await productService.createProduct(req.body);
         if (!product) return next(new AppError(400, 'Product creation failed'));
         res.status(201).json(product);
@@ -37,5 +37,23 @@ export const productController = {
         const deletedProduct = await productService.deleteProduct(req.params.id);
         if (!deletedProduct) return next(new AppError(404, 'Product not found'));
         res.status(200).json({ message: 'Product deleted' });
+    }),
+
+    filterProducts: catchAsync(async (req, res, next) => {
+        const { category, minPrice, maxPrice } = req.body;
+        if (!category && minPrice === undefined && maxPrice === undefined) {
+            return next(new AppError(400, 'Should provide at least one search'));
+        }
+        if (minPrice !== undefined && maxPrice !== undefined && minPrice > maxPrice) {
+            return next(new AppError(400, 'The minimum price cannot be higher than the maximum price'));
+        }
+        const filters = { category, minPrice, maxPrice };
+        const filteredProducts = await productService.filterProducts(filters);
+            res.status(200).json({
+            status: 'success',
+            results: filteredProducts.length,
+            data: filteredProducts,
+            SearchApply: filters
+        });
     })
 };
