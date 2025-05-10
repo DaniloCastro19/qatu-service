@@ -31,7 +31,7 @@ app.use((req, res, next) => {
     console.log('[404 Handler] URL recibida:', originalUrl);
     return next(new AppError(404,`${originalUrl} not found!`));
 });
-  
+
 app.use(globalErrorHandler);
 
 export default app;
