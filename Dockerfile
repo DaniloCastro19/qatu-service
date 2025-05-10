@@ -16,6 +16,7 @@ WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/src ./src
+COPY --from=builder /app/test ./test
 COPY --from=builder /app/package*.json ./
 
 EXPOSE 3000
