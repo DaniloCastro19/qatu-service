@@ -1,6 +1,8 @@
 import { userRepository } from "../../dataAccessLayer/repositories/user.repository.js";
 import jwtService from "./jwt.service.js";
 
+
+
 export const loginService = {
   async execute(email, password) {
     const user = await userRepository.getUserByEmail(email);
@@ -12,9 +14,12 @@ export const loginService = {
   }
 };
 
+
 export const logoutService = {
   async execute(userId) {
-    await userRepository.updateInvalidateBefore(userId, new Date());
+    const userLogout = await userRepository.updateInvalidateBefore(userId, new Date());
+    return userLogout;
+
   }
 };
 
