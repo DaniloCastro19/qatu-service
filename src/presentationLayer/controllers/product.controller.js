@@ -8,8 +8,8 @@ export const productController = {
         const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
-    const orderBy = req.query.name === 'true';   // true = name, false = price
-    const ascending = req.query.asce === 'true'; // true = asc, false = desc
+    const orderBy = req.query.orderBy === 'true';   // true = name, false = price
+    const ascending = req.query.ascending === 'true'; // true = asc, false = desc
 
     const products = await productService.getAllProducts(page, limit, orderBy, ascending);
     res.status(200).json({ message: 'Products retrieved', data: products });
