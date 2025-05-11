@@ -1,5 +1,6 @@
 import express from 'express';
 import { userController } from '../controllers/user.controller.js';
+import { validateAuthRequest } from '../middlewares/validation.middleware.js';
 
 export const router = express.Router();
 

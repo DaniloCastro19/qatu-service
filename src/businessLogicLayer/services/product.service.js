@@ -1,9 +1,11 @@
 import { productRepository } from "../../dataAccessLayer/repositories/product.repository.js"
 
 export const productService = {
-    async getAllProducts() {
-        const products = await productRepository.getAllProducts();
-        return products;
+    async getAllProducts(page, limit, orderBy, ascending) {
+        const sortField = orderBy ? 'name' : 'price';
+        const sortOrder = ascending ? 1 : -1;
+
+        return await productRepository.getAllProducts(page, limit, sortField, sortOrder);
     },
 
     async getProductbyId(id) {
