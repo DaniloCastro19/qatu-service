@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const sellerApplicationModel = new mongoose.Schema({
     userID: {
-        type: ObjectId,
+        type: mongoose.Types.ObjectId,
         required: true,
     },
     status: {
@@ -12,5 +13,7 @@ const sellerApplicationModel = new mongoose.Schema({
         default: 'pending'
     }
 });
+
+sellerApplicationModel.plugin(mongoosePaginate);
 
 export default mongoose.model('sellerApplication', sellerApplicationModel);
