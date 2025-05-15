@@ -2,9 +2,19 @@ import Product from '../models/product.model.js';
 
 export const productRepository = {
 
-    async getAllProducts(page, limit, sortField, sortOrder) {
+    async getAllProducts(page, limit, sortField, sortOrder, filters={}) {
       const skip = (page - 1) * limit;
-      return await Product.find()
+
+      const request ={};
+      if(filters.category){
+        request.category = filters.category;
+      }
+      if(filters.minPrice || filters.maxPrice){
+        request.price= {};
+        if(filters.minPrice)request.price.$gte = Number(filters.minPrice);
+        if(filters.maxPrice)request.price.$lte = Number(filters.maxPrice)
+      }
+      return await Product.find(request)
         .sort({ [sortField]: sortOrder })
         .skip(skip)
         .limit(limit);
