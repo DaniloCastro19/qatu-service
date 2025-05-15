@@ -10,8 +10,14 @@ export const productController = {
 
     const orderBy = req.query.orderBy === 'true';   // true = name, false = price
     const ascending = req.query.ascending === 'true'; // true = asc, false = desc
+    
+    const filters ={
+        category: req.query.category,
+        minPrice: req.query.minPrice ?Number(req.query.minPrice) : undefined,
+        maxPrice: req.query.maxPrice? Number(req.query.maxPrice): undefined
+    };
 
-    const products = await productService.getAllProducts(page, limit, orderBy, ascending);
+    const products = await productService.getAllProducts(page, limit, orderBy, ascending, filters);
     res.status(200).json({ message: 'Products retrieved', data: products });
     }),
 
