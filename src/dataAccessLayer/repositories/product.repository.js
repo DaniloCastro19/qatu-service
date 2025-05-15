@@ -4,8 +4,8 @@ export const productRepository = {
 
     async getAllProducts(page, limit, sortField, sortOrder, filters={}) {
       const skip = (page - 1) * limit;
-      const filters = filterQuery(filters);
-      return await Product.find(request)
+      const searchtoFilter = filterQuery(filters);
+      return await Product.find(searchtoFilter)
         .sort({ [sortField]: sortOrder })
         .skip(skip)
         .limit(limit);
