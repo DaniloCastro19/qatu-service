@@ -1,7 +1,7 @@
 import { productRepository } from "../../dataAccessLayer/repositories/product.repository.js"
 
 export const productService = {
-    async getAllProducts(page, limit, orderBy, ascending, filters) {
+    async getAllProducts(page, limit, orderBy, ascending, filters={}) {
         const sortField = orderBy ? 'name' : 'price';
         const sortOrder = ascending ? 1 : -1;
 
