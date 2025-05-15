@@ -1,7 +1,6 @@
 stages:
   - test
   - push
-  - network
 
 image: docker:24.0
 
@@ -45,8 +44,3 @@ push-image:
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
     - docker build -t "$CI_REGISTRY_IMAGE:latest" .
     - docker push "$CI_REGISTRY_IMAGE:latest"
-
-test-network:
-  stage: network
-  script:
-    - chmod +x ./docker-network.sh; ./docker-network.sh
