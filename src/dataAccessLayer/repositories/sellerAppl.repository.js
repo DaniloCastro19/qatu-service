@@ -9,6 +9,10 @@ export const sellerApplicationRepository = {
       return await SellerApplication.paginate({}, options);
     },
 
+    async getApplicationById(id) {
+      return SellerApplication.findById(id);
+    },
+  
     async createApplication(data) {
       const application = new SellerApplication(data);
       return await application.save();

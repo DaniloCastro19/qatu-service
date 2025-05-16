@@ -12,13 +12,13 @@ export const sellerApplicationController = {
     }),
    createApplication: catchAsync(async (req, res, next) => {
         const application = await sellerApplicationService.createApplication(req.body);
-        if (!application) return next(new AppError(400, 'Application creation failed'));
+        if (!application) return next(new AppError(400, 'Application creation failed. Please, make sure user exists and it role is "customer".'));
         res.status(201).json({message: 'Application created!', data: application});
         }),
 
     updateApplication: catchAsync(async (req, res, next) => {
         const updatedApplication = await sellerApplicationService.updateApplication(req.params.id, req.body);
-        if (!updatedApplication) return next(new AppError(404, 'Application not found'));
+        if (!updatedApplication) return next(new AppError(404, 'Application or user not found'));
         res.status(200).json({message: 'Application and user role updated!', data: updatedApplication});
     }),
 
