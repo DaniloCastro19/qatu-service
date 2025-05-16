@@ -6,9 +6,15 @@ export const sellerApplicationService = {
     async getAllApplication(page, limit) {
         return await sellerApplicationRepository.getAllApplication(page, limit);
     },
+    async getApplicationById(id) {
+        const application = await sellerApplicationRepository.getApplicationById(id);
+        if(!application){
+            return null;
+        }
+        return application;
+    },
 
     async createApplication(data) {
-        // TODO: Validate if the userID entered exists
         const user = await userRepository.getUserById(data.userID);
         if (!user){
             return null;

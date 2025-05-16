@@ -10,9 +10,15 @@ applicationRoutes.get(
     sellerApplicationController.getAllApplications
 );
 
+applicationRoutes.get(
+    '/:id',
+    authorizeRoles(['admin']),
+    sellerApplicationController.getApplicationsById
+);
+
 applicationRoutes.post(
     '/', 
-    authorizeRoles(['admin']),
+    authorizeRoles(['customer']),
     sellerApplicationController.createApplication
 );
 

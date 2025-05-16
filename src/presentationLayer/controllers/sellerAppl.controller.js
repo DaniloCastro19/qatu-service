@@ -10,6 +10,11 @@ export const sellerApplicationController = {
         
         res.status(200).json({message: 'Applications retrieved', data: applications});
     }),
+    getApplicationsById: catchAsync(async (req, res, next) => {
+        const application = await sellerApplicationService.getApplicationById(req.params.id);
+        if (!application) return next(new AppError(404, 'Application not found'));
+        res.status(200).json({message: 'Application retrieved', data: application});
+    }),
    createApplication: catchAsync(async (req, res, next) => {
         const application = await sellerApplicationService.createApplication(req.body);
         if (!application) return next(new AppError(400, 'Application creation failed. Please, make sure user exists and it role is "customer".'));
