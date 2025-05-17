@@ -7,7 +7,7 @@ const productRoutes = express.Router();
 productRoutes.get('/', productController.getAllProducts);
 productRoutes.get('/:id', productController.getProductById);
 productRoutes.post('/', 
-    authorizeRoles(['admin', 'seller']),
+    authorizeRoles(['admin', 'seller', 'customer']),
     productController.createProduct);
 productRoutes.put('/:id', 
     authorizeRoles(['admin', 'seller']),

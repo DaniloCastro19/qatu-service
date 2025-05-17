@@ -8,7 +8,7 @@ export const jwtService = {
     const payload = {
       id: user._id,
       role: user.role,
-      iat: Math.floor(DataTransfer.now()/1000),
+      iat: Math.floor(Date.now() / 1000),
       timeout: envs.SESSION_INACTIVITY_TIMEOUT
     };
     return jwt.sign(payload, envs.JWT_SECRET, { expiresIn: envs.SESSION_INACTIVITY_TIMEOUT });
