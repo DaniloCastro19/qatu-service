@@ -4,16 +4,15 @@ import { authorizeRoles } from '../middlewares/authMiddleware.js';
 
 const productRoutes = express.Router();
 
+
+const protectedRoute = [
+    authorizeRoles(['admin', 'seller', 'customer'])
+];
+
 productRoutes.get('/', productController.getAllProducts);
 productRoutes.get('/:id', productController.getProductById);
-productRoutes.post('/', 
-    authorizeRoles(['admin', 'seller', 'customer']),
-    productController.createProduct);
-productRoutes.put('/:id', 
-    authorizeRoles(['admin', 'seller']),
-    productController.updateProduct);
-productRoutes.delete('/:id', 
-    authorizeRoles(['admin', 'seller']),
-    productController.deleteProduct);
+productRoutes.post('/', ...protectedRoute, productController.createProduct);
+productRoutes.put('/:id', ...protectedRoute,productController.updateProduct);
+productRoutes.delete('/:id', ...protectedRoute,productController.deleteProduct);
 
 export default productRoutes;
