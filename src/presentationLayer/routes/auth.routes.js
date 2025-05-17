@@ -20,6 +20,7 @@ router.post('/login', validateAuthRequest('login'), authenticationController.log
 router.post('/logout', ...protectedRoute, authenticationController.logout);
 router.post('/refresh-token', ...protectedRoute, authenticationController.refreshToken);
 
-
+router.get('/session-time',passport.authenticate('jwt', { session: false }), inactivityMiddleware, authenticationController.getSessionTime
+);
 
 export default router;

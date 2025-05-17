@@ -54,5 +54,16 @@ export const authenticationController = {
         expiresIn: envs.SESSION_INACTIVITY_TIMEOUT
       }
     });
+  }),
+  
+  getSessionTime: catchAsync(async (req, res) => {
+    res.status(200).json({
+      status: 'success',
+      data: {
+        remainingSeconds: req.sessionInfo?.remainingTime || 0,
+        expiresAt: req.sessionInfo?.expiresAt,
+        timeout: envs.SESSION_INACTIVITY_TIMEOUT
+      }
+    });
   })
 };

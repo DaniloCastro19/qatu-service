@@ -4,37 +4,29 @@ import { userRepository } from '../../dataAccessLayer/repositories/user.reposito
 import { AppError } from '../../businessLogicLayer/errors/error.js';
 
 export const inactivityMiddleware = async (req, res, next) => {
-    try {
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token) return next();
-        
-        const decoded = jwt.verify(token, envs.JWT_SECRET);
-        const now = Math.floor(Date.now() / 1000);
+try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return next();
+    
+    const decoded = jwt.verify(token, envs.JWT_SECRET);
+    const now = Math.floor(Date.now() / 1000);
+    const expirationTime = decoded.iat + envs.SESSION_INACTIVITY_TIMEOUT;
 
-        if (decoded.iat + envs.SESSION_INACTIVITY_TIMEOUT < now) {
+        req.sessionInfo = {
+        remainingTime: expirationTime - now,
+        expiresAt: new Date(expirationTime * 1000)
+        };
+
+        if (expirationTime < now) {
         await userRepository.registerAutomaticLogout(decoded.id);
         return next(new AppError(401, 'Your session has expired due to inactivity', {
             code: 'SESSION_TIMEOUT',
-            autoLogout: true,
-            redirectUrl: `${envs.CLIENT_URL}/login?session_expired=true`
-        }));
-        }
-
-        await userRepository.updateLastActivity(decoded.id);
-        
-        req.sessionInfo = {
-        remainingTime: (decoded.iat + envs.SESSION_INACTIVITY_TIMEOUT) - now,
-        userId: decoded.id
-        };
-        
-        next();
-    } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-        return next(new AppError(401, 'Session expired', {
-            code: 'TOKEN_EXPIRED',
             autoLogout: true
         }));
         }
+        await userRepository.updateLastActivity(decoded.id);
+        next();
+    } catch (error) {
         next(error);
     }
     };
