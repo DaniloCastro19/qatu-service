@@ -33,6 +33,7 @@ test-app:
   
   before_script:
     - apt-get update && apt-get install -y docker-compose
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
 
   script:
     - docker-compose up -d mongo
