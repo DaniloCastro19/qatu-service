@@ -37,7 +37,7 @@ test-app:
 
   script:
     - docker-compose up -d mongo
-    - docker-compose run --rm app npm run test
+    - docker-compose run --rm app sh -c "npm ci && run test"
 
 push-image:
   stage: push
