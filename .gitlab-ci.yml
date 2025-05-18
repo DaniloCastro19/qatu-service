@@ -43,4 +43,4 @@ push-image:
   script:
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
     - docker build -t "$CI_REGISTRY_IMAGE:latest" .
-    - docker push "$CI_REGISTRY_IMAGE:latest"
+    - docker push "$CI_REGISTRY_IMAGE:1.0"
