@@ -6,7 +6,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - CONNECTION_STRING=mongodb://mongo:27017/my_db
+      PORT: 3000
+      CONNECTION_STRING: mongodb://mongo:27017/my_db
+      JWT_SECRET: "my_secret"
+      CLIENT_URL: "*"
+      NODE_ENV: http://localhost:5173
     
     depends_on:
       - mongo
@@ -15,7 +19,7 @@ services:
       - app-network
 
   mongo:
-    image: mongo
+    image: mongo:8.0
     ports:
       - "27017:27017"
     volumes: 

@@ -2,7 +2,7 @@ import express from 'express';
 import swaggerUI from 'swagger-ui-express';
 import specs from './config/swagger/swagger.js';
 import dbClient from "./config/dbClient.js"
-import passport from '../src/presentationLayer/middlewares/AuthMiddleware.js';
+import passport from '../src/presentationLayer/middlewares/authMiddleware.js';
 import { router } from './presentationLayer/routes/index.routes.js';
 import { envs } from './config/environments/environments.js';
 import cors from 'cors';
