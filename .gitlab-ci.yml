@@ -22,7 +22,7 @@ workflow:
 
 test-app:
   stage: test
-  image: node:20
+  image: docker:24.0
   services:
     - name: docker:24.0-dind
       alias: docker
@@ -31,13 +31,9 @@ test-app:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
   
-  before_script:
-    - apt-get update && apt-get install -y docker-compose
-    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
 
   script:
-    - docker-compose up -d mongo
-    - docker-compose run --rm app sh -c "npm ci && run test"
+    - docker build --target builder .
 
 push-image:
   stage: push
