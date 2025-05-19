@@ -26,7 +26,14 @@ try {
         }
         await userRepository.updateLastActivity(decoded.id);
         next();
-    } catch (error) {
-        next(error);
+    }  catch (error) {
+    console.error('[Session Error]', error.message);
+    if (error.name === 'TokenExpiredError') {
+        return next(new AppError(401, 'Session has expired', {
+        code: 'TOKEN_EXPIRED',
+        autoLogout: true
+    }));
     }
-    };
+    next(error);
+  }
+};
