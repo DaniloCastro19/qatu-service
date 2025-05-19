@@ -75,10 +75,12 @@ export const productController = {
     }),
     
     addRating: catchAsync(async (req, res, next) => {
-        const rating = parseFloat(req.body.rating);
-        if (isNaN(rating)) return next(new AppError(400, 'Invalid rating'));
-        const updated = await productService.addRating(req.params.id, rating);
-        if (!updated) return next(new AppError(404, 'Product not found'));
-        res.status(200).json({ message: 'Rating added', data: updated });
+        const { rating } = req.body;
+        if (typeof rating !== 'number' || rating < 1 || rating > 5) {
+            return next(new AppError(400, 'Rating must be a number between 1 and 5'));
+        }
+        const product = await productService.addRating(req.params.id, rating);
+        if (!product) return next(new AppError(404, 'Product not found'));
+        res.status(200).json({ message: 'Rating added', rating: product.rating });
     })
 };
