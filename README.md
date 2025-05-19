@@ -35,7 +35,7 @@ CONNECTION_STRING=mongodb://localhost:27017/DB_NAME
 
 Feel free to replace "DB_NAME" with any other name you want for the database, is up to you.
 
-### DevOps Settings (for CI/CD)
+### DevOps Variables Setting (for CI/CD)
 
 You can check the necessary variables for files like `.gitlab-ci.yml`, `docker-compose.yml` files on:
 
