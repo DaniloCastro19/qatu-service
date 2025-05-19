@@ -19,4 +19,10 @@ productRoutes.post('/', ...protectedRoute, productController.createProduct);
 productRoutes.put('/:id', ...protectedRoute,productController.updateProduct);
 productRoutes.delete('/:id', ...protectedRoute,productController.deleteProduct);
 
+productRoutes.get('/:id/comments', productController.getComments);
+productRoutes.post('/:id/comments', productController.addComment);
+    
+productRoutes.get('/:id/rating', productController.getRating);
+productRoutes.post('/:id/rating', productController.addRating);
+
 export default productRoutes;

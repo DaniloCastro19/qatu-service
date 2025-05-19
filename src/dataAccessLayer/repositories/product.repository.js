@@ -31,6 +31,33 @@ export const productRepository = {
   
     async deleteProduct(id) {
       return Product.findByIdAndDelete(id);
+    },
+
+    async addComment(productId, comment) {
+      return Product.findByIdAndUpdate(
+        productId,
+        { $push: { comments: comment } },
+        { new: true }
+      );
+    },
+  
+    async getComments(productId) {
+      return Product.findById(productId).select('comments');
+    },
+  
+    async addRating(productId, rating) {
+      const product = await Product.findById(productId);
+      if (!product) return null;
+      if (!product.ratings) product.ratings = [];
+      product.ratings.push(rating);
+      
+      const total = product.ratings.reduce((acc, r) => acc + r, 0);
+      product.rating = total / product.ratings.length;
+      return product.save();
+    },
+  
+    async getRating(productId) {
+      return Product.findById(productId).select('rating');
     }
 };   
 

@@ -31,5 +31,21 @@ export const productService = {
     async deleteProduct(id) {
         const product = await productRepository.deleteProduct(id);
         return product;
+    },
+    
+    async getComments(productId) {
+        return await productRepository.getComments(productId);
+    },
+        
+    async addComment(productId, comment) {
+        return await productRepository.addComment(productId, comment);
+    },
+        
+    async getRating(productId) {
+        return await productRepository.getRating(productId);
+    },
+        
+    async addRating(productId, rating) {
+        return await productRepository.addRating(productId, rating);
     }
 };
