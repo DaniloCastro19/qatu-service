@@ -1,31 +1,35 @@
 
 services:
   app:
-    build: .
+    image: ${APP_IMAGE}
     container_name: qatu-api
     ports:
       - "3000:3000"
     environment:
-      - CONNECTION_STRING=mongodb://mongo:27017/my_db
+      PORT: ${PORT}
+      CONNECTION_STRING: ${CONNECTION_STRING}
+      JWT_SECRET: ${JWT_SECRET}
+      CLIENT_URL: ${CLIENT_URL}
+      NODE_ENV: ${NODE_ENV}
     
     depends_on:
       - mongo
     
     networks:
-      - app-network
+      - back-end
 
   mongo:
-    image: mongo
+    image: mongo:8.0
     ports:
       - "27017:27017"
     volumes: 
       - mongo-data:/data/db
     
     networks:
-      - app-network
+      - back-end
 
 networks:
-  app-network:
+  back-end:
 
 volumes:
   mongo-data:

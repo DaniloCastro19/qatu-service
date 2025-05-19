@@ -1,6 +1,6 @@
 import express from 'express';
 import { productController } from '../controllers/product.controller.js';
-import { authorizeRoles } from '../middlewares/AuthMiddleware.js';
+import { authorizeRoles } from '../middlewares/authMiddleware.js';
 
 const productRoutes = express.Router();
 

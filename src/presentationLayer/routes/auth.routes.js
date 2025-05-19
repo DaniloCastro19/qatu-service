@@ -1,7 +1,7 @@
 import express from 'express';
 import { authenticationController } from '../controllers/auth.controller.js';
 import passport from 'passport';
-import { authorizeRoles } from '../middlewares/AuthMiddleware.js';
+import { authorizeRoles } from '../middlewares/authMiddleware.js';
 import { validateAuthRequest } from '../middlewares/validation.middleware.js';
 
 
