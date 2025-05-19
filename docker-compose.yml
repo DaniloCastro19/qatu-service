@@ -17,6 +17,7 @@ services:
     
     networks:
       - app-network
+      - back-end
 
   mongo:
     image: mongo:8.0
@@ -26,10 +27,11 @@ services:
       - mongo-data:/data/db
     
     networks:
-      - app-network
+      - back-end
 
 networks:
   app-network:
+  back-end:
 
 volumes:
   mongo-data:
