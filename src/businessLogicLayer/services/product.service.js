@@ -44,8 +44,8 @@ export const productService = {
     async getRating(productId) {
         return await productRepository.getRating(productId);
     },
-        
-    async addRating(productId, rating) {
-        return await productRepository.addRating(productId, rating);
+
+    async addRating(productId, userId, ratingValue) {
+        return await productRepository.addRating(productId, userId, ratingValue);
     }
 };

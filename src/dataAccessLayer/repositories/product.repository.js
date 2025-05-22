@@ -45,16 +45,31 @@ export const productRepository = {
       return Product.findById(productId).select('comments');
     },
   
-    async addRating(productId, rating) {
+    async addRating(productId, userId, ratingValue) {
       const product = await Product.findById(productId);
       if (!product) return null;
-      if (!product.ratings) product.ratings = [];
-      product.ratings.push(rating);
-      
-      const total = product.ratings.reduce((acc, r) => acc + r, 0);
+  
+      // Asegúrate de que ratings sea un array
+      if (!Array.isArray(product.ratings)) {
+          product.ratings = [];
+      }
+  
+      // Verifica si el usuario ya calificó
+      const existingRating = product.ratings.find(r => r.user.toString() === userId);
+      if (existingRating) {
+          // Actualiza el rating existente
+          existingRating.value = ratingValue;
+      } else {
+          // Agrega un nuevo rating
+          product.ratings.push({ user: userId, value: ratingValue });
+      }
+  
+      // Recalcula el promedio de ratings
+      const total = product.ratings.reduce((acc, r) => acc + r.value, 0);
       product.rating = total / product.ratings.length;
+  
       return product.save();
-    },
+  },
   
     async getRating(productId) {
       return Product.findById(productId).select('rating');

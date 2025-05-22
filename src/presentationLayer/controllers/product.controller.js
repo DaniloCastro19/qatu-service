@@ -58,11 +58,15 @@ export const productController = {
       }),
     
     addComment: catchAsync(async (req, res, next) => {
+        if (!req.user || !req.user.id) {
+            return next(new AppError(401, 'User not authenticated'));
+        }
+
         const comment = {
             user: req.user.id,
             text: req.body.text
         };
-        
+
         const updated = await productService.addComment(req.params.id, comment);
         if (!updated) return next(new AppError(404, 'Product not found'));
         res.status(200).json({ message: 'Comment added', data: updated });
@@ -79,8 +83,14 @@ export const productController = {
         if (typeof rating !== 'number' || rating < 1 || rating > 5) {
             return next(new AppError(400, 'Rating must be a number between 1 and 5'));
         }
-        const product = await productService.addRating(req.params.id, rating);
+    
+        if (!req.user || !req.user.id) {
+            return next(new AppError(401, 'User not authenticated'));
+        }
+    
+        const product = await productService.addRating(req.params.id, req.user.id, rating);
         if (!product) return next(new AppError(404, 'Product not found'));
-        res.status(200).json({ message: 'Rating added', rating: product.rating });
+    
+        res.status(200).json({ message: 'Rating added/updated', rating: product.rating });
     })
 };

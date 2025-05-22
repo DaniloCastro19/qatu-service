@@ -20,9 +20,13 @@ productRoutes.put('/:id', ...protectedRoute,productController.updateProduct);
 productRoutes.delete('/:id', ...protectedRoute,productController.deleteProduct);
 
 productRoutes.get('/:id/comments', productController.getComments);
-productRoutes.post('/:id/comments', productController.addComment);
+productRoutes.post('/:id/comments', 
+    authorizeRoles(['customer', 'admin', 'seller']), 
+    productController.addComment);
     
-productRoutes.get('/:id/rating', productController.getRating);
+productRoutes.post('/:id/rating', 
+    authorizeRoles(['customer', 'admin', 'seller']), 
+    productController.addRating);
 productRoutes.post('/:id/rating', productController.addRating);
 
 export default productRoutes;
