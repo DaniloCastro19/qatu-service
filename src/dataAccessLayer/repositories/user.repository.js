@@ -37,13 +37,18 @@ export const userRepository = {
     },
 
       async registerAutomaticLogout(userId) {
-      return await User.findByIdAndUpdate(userId, {
-        $set: {
-          lastAutomaticLogout: new Date(),
-          invalidateBefore: new Date()
-        }
-      }, { new: true });
+  return await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        lastAutomaticLogout: new Date(),
+        invalidateBefore: new Date(),
+        lastActivity: new Date()
+      }
     },
+    { new: true }
+  );
+},
 
     async getLastActivity(userId) {
       const user = await User.findById(userId).select('lastActivity');

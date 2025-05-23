@@ -20,7 +20,7 @@ try {
 
     if (now > expirationTime) {
         await userRepository.registerAutomaticLogout(decoded.id);
-        return next(new AppError(401, 'Sesión cerrada por inactividad (100 segundos)', {
+        return next(new AppError(401, 'Session closed due to inactivity', {
             code: 'SESSION_TIMEOUT',
             autoLogout: true
         }));
