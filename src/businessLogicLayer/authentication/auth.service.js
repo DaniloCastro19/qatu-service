@@ -1,5 +1,7 @@
 import { userRepository } from "../../dataAccessLayer/repositories/user.repository.js";
 import jwtService from "./jwt.service.js";
+import jwt from 'jsonwebtoken';
+
 
 
 
@@ -47,8 +49,11 @@ export const inactivityService = {
       throw new Error('User not found');
     }
 
-    const now = Math.floor(Date.now() / 1000);
-    const expirationTime = decoded.iat + (process.env.SESSION_INACTIVITY_TIMEOUT || 1800);
+    const now = Math.floor(Date.now() / 1000); // Timestamp actual en segundos
+    const inactivityTimeout = parseInt(process.env.SESSION_INACTIVITY_TIMEOUT) || 100; // 100 segundos
+    const expirationTime = decoded.iat + inactivityTimeout; // Suma correcta
+
+    console.log(`[DEBUG] now: ${now}, iat: ${decoded.iat}, expires: ${expirationTime}`);
 
     if (now > expirationTime) {
       await userRepository.registerAutomaticLogout(decoded.id);
@@ -61,8 +66,8 @@ export const inactivityService = {
 
     await userRepository.updateLastActivity(decoded.id);
     return {
-      remainingTime: expirationTime - now,
-      expiresAt: new Date(expirationTime * 1000)
+      remainingTime: expirationTime - now, // Tiempo restante en segundos
+      expiresAt: new Date(expirationTime * 1000) // Conversión a Date correcta
     };
   }
 };

@@ -56,14 +56,17 @@ export const authenticationController = {
     });
   }),
   
-  getSessionTime: catchAsync(async (req, res) => {
-    res.status(200).json({
-      status: 'success',
-      data: {
-        remainingSeconds: req.sessionInfo?.remainingTime || 0,
-        expiresAt: req.sessionInfo?.expiresAt,
-        timeout: envs.SESSION_INACTIVITY_TIMEOUT
-      }
-    });
-  })
-};
+getSessionTime: catchAsync(async (req, res) => {
+  if (!req.sessionInfo) {
+    throw new AppError(400, 'Session information not available');
+  }
+  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      remainingSeconds: req.sessionInfo.remainingTime,
+      expiresAt: req.sessionInfo.expiresAt,
+      timeout: parseInt(process.env.SESSION_INACTIVITY_TIMEOUT) || 100
+    }
+  });
+})}

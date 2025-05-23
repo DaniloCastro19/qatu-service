@@ -2,16 +2,14 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { envs } from '../../config/environments/environments.js';
 
-
 export const jwtService = {
   generateToken(user) {
     const payload = {
       id: user._id,
       role: user.role,
-      iat: Math.floor(Date.now() / 1000),
-      timeout: envs.SESSION_INACTIVITY_TIMEOUT
+      iat: Math.floor(Date.now() / 1000)
     };
-    return jwt.sign(payload, envs.JWT_SECRET, { expiresIn: envs.SESSION_INACTIVITY_TIMEOUT });
+    return jwt.sign(payload, envs.JWT_SECRET, { expiresIn: '24h' });
   },
 
   verifyToken(token) {
@@ -22,5 +20,3 @@ export const jwtService = {
     return await bcrypt.compare(inputPassword, storedPassword);
   }
 };
-
-export default jwtService;
