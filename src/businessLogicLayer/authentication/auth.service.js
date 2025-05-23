@@ -41,33 +41,21 @@ export const refreshTokenService = {
 };
 
 export const inactivityService = {
-  async execute(token) {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await userRepository.getUserById(decoded.id);
-    
-    if (!user) {
-      throw new Error('User not found');
-    }
+  lastActivityMap: new Map(),
 
-    const now = Math.floor(Date.now() / 1000); // Timestamp actual en segundos
-    const inactivityTimeout = parseInt(process.env.SESSION_INACTIVITY_TIMEOUT) || 100; // 100 segundos
-    const expirationTime = decoded.iat + inactivityTimeout; // Suma correcta
+  async checkInactivity(userId) {
+    const now = Date.now();
+    const lastActivity = this.lastActivityMap.get(userId) || now;
+    const inactivityTimeout = envs.SESSION_INACTIVITY_TIMEOUT * 1000;
 
-    console.log(`[DEBUG] now: ${now}, iat: ${decoded.iat}, expires: ${expirationTime}`);
-
-    if (now > expirationTime) {
-      await userRepository.registerAutomaticLogout(decoded.id);
-      throw { 
-        name: 'InactivityError',
-        message: 'Session expired due to inactivity',
-        autoLogout: true
-      };
-    }
-
-    await userRepository.updateLastActivity(decoded.id);
+    this.lastActivityMap.set(userId, now);
     return {
-      remainingTime: expirationTime - now, // Tiempo restante en segundos
-      expiresAt: new Date(expirationTime * 1000) // Conversión a Date correcta
+      remainingTime: inactivityTimeout - (now - lastActivity),
+      isExpired: (now - lastActivity) > inactivityTimeout
     };
+  },
+  async handleExpiredSession(userId) {
+    this.lastActivityMap.delete(userId);
+    await userRepository.registerAutomaticLogout(userId);
   }
 };
