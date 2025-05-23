@@ -20,3 +20,4 @@ export const jwtService = {
     return await bcrypt.compare(inputPassword, storedPassword);
   }
 };
+export default jwtService;

@@ -1,4 +1,4 @@
-import { inactivityService } from '../../businessLogicLayer/authentication/auth.service';
+import { inactivityService } from '../../businessLogicLayer/authentication/auth.service.js';
 
 export const inactivityMiddleware = async (req, res, next) => {
 try {
@@ -18,7 +18,6 @@ try {
         remainingTime: Math.floor(remainingTime / 1000),
         expiresAt: new Date(Date.now() + remainingTime)
     };
-
     next();
 } catch (error) {
     next(error);

@@ -1,6 +1,5 @@
 import { userRepository } from "../../dataAccessLayer/repositories/user.repository.js";
 import jwtService from "./jwt.service.js";
-import jwt from 'jsonwebtoken';
 
 
 
