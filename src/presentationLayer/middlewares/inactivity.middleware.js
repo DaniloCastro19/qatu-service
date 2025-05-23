@@ -1,4 +1,4 @@
-import { inactivityService } from '../services/inactivity.service.js';
+import { inactivityService } from '../../businessLogicLayer/authentication/auth.service';
 
 export const inactivityMiddleware = async (req, res, next) => {
 try {
