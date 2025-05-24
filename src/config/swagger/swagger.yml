@@ -224,6 +224,21 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PaginatedApplicationData'   
+  /applications/{id}:
+    get:
+      summary: 'Get a of applications'
+      description: 'Returns application'
+      tags:
+        - 'Applications'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the application to get.'
+          schema:
+            type: string  
   /auth/login:
     post:
       summary: 'User login'
