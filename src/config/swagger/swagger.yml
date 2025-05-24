@@ -196,114 +196,6 @@ paths:
       responses:
         200:
           description: 'product successfully deleted.'
-
-  /applications:
-    get:
-      summary: 'Get a list of applications'
-      description: 'Returns a list of applications.'
-      tags:
-        - 'Applications'
-      responses:
-        200:
-          description: 'List of applications successfully retrieved.'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ApplicationResponse'
-    post:
-      summary: 'create the application'
-      description: 'Allows the creation of a new application in the system.'
-      tags:
-        - 'Applications'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApplicationRequest'
-  /applications/{id}:
-    get:
-      summary: 'Get a of applications'
-      description: 'Returns application'
-      tags:
-        - 'Applications'
-      parameters:
-        - name: 'id'
-          in: 'path'
-          required: true
-          description: 'ID of the application to get.'
-          schema:
-            type: string
-      responses:
-        200:
-          description: 'application successfully retireved.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApplicationResponse'
-    put:
-      summary: 'Update a application'
-      description: "Allows updating an existing application's information."
-      tags:
-        - Applications'
-      parameters:
-        - name: 'id'
-          in: 'path'
-          required: true
-          description: 'ID of the application to update.'
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApplicationtUpdate'
-      responses:
-        200:
-          description: 'Applications successfully updated.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApplicationResponse'
-    delete:
-      summary: 'Delete a application'
-      description: 'Allows deleting an existing application by its ID.'
-      tags:
-        - 'Application'
-      parameters:
-        - name: 'id'
-          in: 'path'
-          required: true
-          description: 'ID of the application to delete.'
-          schema:
-            type: string
-      responses:
-        200:
-          description: 'application successfully deleted.'
-
-    post:
-      summary: 'create the products'
-      description: 'Allows the creation of a new product in the system.'
-      tags:
-        - 'Products'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProductRequest'
-      responses:
-        201:
-          description: 'Create products successfully retrieved.'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductResponse'
       
   /auth/login:
     post:
@@ -387,6 +279,69 @@ paths:
                   message:
                     type: string
                     example: Unauthorized
+  # /applications/{id}:
+  #   get:
+  #     summary: 'Get an application by ID'
+  #     description: 'Returns a specific application.'
+  #     tags:
+  #       - 'Applications'
+  #     parameters:
+  #       - name: 'id'
+  #         in: 'path'
+  #         required: true
+  #         description: 'ID of the application to retrieve.'
+  #         schema:
+  #           type: string
+  #     responses:
+  #       200:
+  #         description: 'Application successfully retrieved.'
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ApplicationResponse'
+
+  #   put:
+  #     summary: 'Update an application'
+  #     description: "Allows updating an existing application's information."
+  #     tags:
+  #       - 'Applications'
+  #     parameters:
+  #       - name: 'id'
+  #         in: 'path'
+  #         required: true
+  #         description: 'ID of the application to update.'
+  #         schema:
+  #           type: string
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/ApplicationUpdate'
+  #     responses:
+  #       200:
+  #         description: 'Application successfully updated.'
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ApplicationResponse'
+
+  #   delete:
+  #     summary: 'Delete an application'
+  #     description: 'Allows deleting an existing application by its ID.'
+  #     tags:
+  #       - 'Applications'
+  #     parameters:
+  #       - name: 'id'
+  #         in: 'path'
+  #         required: true
+  #         description: 'ID of the application to delete.'
+  #         schema:
+  #           type: string
+  #     responses:
+  #       200:
+  #         description: 'Application successfully deleted.'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -502,6 +457,7 @@ components:
         vendorId:
           type: string
           example: 68194fdd262185e14c3506f6
+
     ProductResponse:
       type: object
       properties:
@@ -532,6 +488,7 @@ components:
         __v:
           type: integer
           example: 0
+
     ProductUpdate:
       type: object
       properties:
@@ -557,7 +514,8 @@ components:
           type: string
           example: 68194fdd262185e14c3506f6
       additionalProperties: false
-    ApplicationResponse:
+
+    Application:
       type: object
       properties:
         _id:
@@ -568,28 +526,66 @@ components:
           example: 6819706802faa39909e2a371
         status:
           type: string
-          example: seller
+          example: pending
         __v:
           type: integer
           example: 0
-    ApplicationRequest:
+
+    PaginatedApplicationData:
       type: object
       properties:
-        userID:
-          type: string
-          example: Aldo.cruz@jalasoft.com
-      required:
-        - userID
+        docs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+        totalDocs:
+          type: integer
+          example: 0
+        limit:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 1
+        page:
+          type: integer
+          example: 1
+        pagingCounter:
+          type: integer
+          example: 1
+        hasPrevPage:
+          type: boolean
+          example: false
+        hasNextPage:
+          type: boolean
+          example: false
+        prevPage:
+          type: integer
+          nullable: true
+          example: null
+        nextPage:
+          type: integer
+          nullable: true
+          example: null
+    # ApplicationListResponse:
+    #   type: object
+    #   properties:
+    #     message:
+    #       type: string
+    #       example: Applications retrieved
+    #     data:
+    #       $ref: '#/components/schemas/PaginatedApplicationData'
+
     LoginRequest:
       type: object
       properties:
         email:
           type: string
-          example: Aldo.cruz@jalasoft.com
+          example: Jazmin1@gmail.com
         password:
           type: string
           format: password
-          example: aldo123
+          example: Jazmin@1234
       required:
         - email
         - password
