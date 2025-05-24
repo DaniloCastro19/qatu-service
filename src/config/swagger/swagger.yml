@@ -273,6 +273,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Application'
+    delete:
+      summary: 'Delete a application'
+      description: 'Allows deleting an existing application by its ID.'
+      tags:
+        - 'Applications'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID of the application to delete.'
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Application deleted'
   /auth/login:
     post:
       summary: 'User login'
