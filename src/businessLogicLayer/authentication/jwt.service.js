@@ -11,7 +11,6 @@ export const jwtService = {
     };
     return jwt.sign(payload, envs.JWT_SECRET, { expiresIn: '24h' });
   },
-
   verifyToken(token) {
     return jwt.verify(token, envs.JWT_SECRET);
   },

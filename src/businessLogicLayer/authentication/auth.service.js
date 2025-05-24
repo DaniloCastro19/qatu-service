@@ -1,7 +1,7 @@
 import { userRepository } from "../../dataAccessLayer/repositories/user.repository.js";
 import jwtService from "./jwt.service.js";
-
-
+import { envs } from '../../config/environments/environments.js';
+import jwt from 'jsonwebtoken';
 
 
 export const loginService = {
@@ -39,22 +39,36 @@ export const refreshTokenService = {
   }
 };
 
+
 export const inactivityService = {
-  lastActivityMap: new Map(),
+  userLastActivity: new Map(),
 
-  async checkInactivity(userId) {
+  async checkAndHandleInactivity(userId, token) {
     const now = Date.now();
-    const lastActivity = this.lastActivityMap.get(userId) || now;
-    const inactivityTimeout = envs.SESSION_INACTIVITY_TIMEOUT * 1000;
-
-    this.lastActivityMap.set(userId, now);
+    const lastActivity = this.userLastActivity.get(userId) || now;
+    const timeout = envs.SESSION_INACTIVITY_TIMEOUT * 1000; 
+    if ((now - lastActivity) > timeout) {
+      await this.forceLogout(userId);
+            try {
+        jwt.verify(token, envs.JWT_SECRET);
+        throw {
+          name: 'InactivityError',
+          message: 'Sesión cerrada por inactividad',
+          autoLogout: true
+        };
+      } catch (err) {
+        throw err;
+      }
+    }
+    this.userLastActivity.set(userId, now);
     return {
-      remainingTime: inactivityTimeout - (now - lastActivity),
-      isExpired: (now - lastActivity) > inactivityTimeout
+      remainingTime: timeout - (now - lastActivity),
+      expiresAt: new Date(now + (timeout - (now - lastActivity)))
     };
   },
-  async handleExpiredSession(userId) {
-    this.lastActivityMap.delete(userId);
+
+  async forceLogout(userId) {
+    this.userLastActivity.delete(userId);
     await userRepository.registerAutomaticLogout(userId);
   }
 };
