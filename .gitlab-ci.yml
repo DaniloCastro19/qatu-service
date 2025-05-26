@@ -38,13 +38,6 @@ test-app:
   script:
     - docker build --target builder .
 
-push-image:
-  stage: push
-  script:
-    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
-    - docker build -t "$CI_REGISTRY_IMAGE:1.0" --target production .
-    - docker push "$CI_REGISTRY_IMAGE:1.0"
-
 unit-tests:
   stage: unit-test
   image: docker:24.0
