@@ -1,6 +1,9 @@
 stages:
   - test
-  - push
+  - unit-tests
+  - coverage
+  - build-image
+  - push-image
 
 image: docker:24.0
 
@@ -40,4 +43,58 @@ push-image:
   script:
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
     - docker build -t "$CI_REGISTRY_IMAGE:1.0" --target production .
+    - docker push "$CI_REGISTRY_IMAGE:1.0"
+
+unit-tests:
+  stage: unit-test
+  image: docker:24.0
+  services:
+    - name: docker:24.0-dind
+      alias: docker
+
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    - docker build --target unit-tests .
+
+coverage-report:
+  stage: coverage
+  image: docker:24.0
+  services:
+    - name: docker:24.0-dind
+      alias: docker
+
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  
+  script:
+    - docker build --target coverage .
+
+build-container-image:
+  stage: build-image
+  image: docker:24.0
+  services:
+    - name: docker:24.0-dind
+      alias: docker
+
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    - docker build --target build .
+
+build-container-image:
+  stage: build-image
+  script:
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
+    - docker build -t "$CI_REGISTRY_IMAGE:1.0" --target production .
+
+push-container-image:
+  stage: push-image
+  script:
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
     - docker push "$CI_REGISTRY_IMAGE:1.0"
