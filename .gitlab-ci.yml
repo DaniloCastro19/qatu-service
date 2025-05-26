@@ -1,6 +1,6 @@
 stages:
   - test
-  - unit-tests
+  - unit-test
   - coverage
   - push-image
 
