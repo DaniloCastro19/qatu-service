@@ -1,18 +1,23 @@
 import express from 'express';
 import { userController } from '../controllers/user.controller.js';
 import { validateAuthRequest } from '../middlewares/validation.middleware.js';
+
 import { authorizeRoles } from '../middlewares/authMiddleware.js';
+import { inactivityMiddleware } from '../middlewares/inactivity.middleware.js';
+import passport from 'passport';
 
 export const router = express.Router();
 
+const protectedRoute = [
+    passport.authenticate('jwt', { session: false }),
+    authorizeRoles(['admin', 'seller', 'customer']),
+    inactivityMiddleware
+];
+
 router.get('/', userController.getAll);
-router.get('/:id', userController.getById);
-router.post('/', userController.register);
-router.put('/:id', 
-    authorizeRoles(['admin', 'seller', 'customer']), // Nice To Have: If a personal profile edit feature is added to the store, this endpoint should be split in two, to only allow a user to update their own info.
-    userController.update);
-router.delete('/:id', 
-    authorizeRoles(['admin']),
-    userController.delete);
+router.get('/:id', ...protectedRoute, userController.getById);
+router.post('/', validateAuthRequest('register'), userController.register);
+router.put('/:id', ...protectedRoute, userController.update);
+router.delete('/:id', ...protectedRoute, userController.delete);
 
 export default router;
