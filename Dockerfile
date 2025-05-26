@@ -29,3 +29,51 @@ COPY --from=builder /app/src ./src
 EXPOSE 3000
 
 CMD ["node", "src/server.js"]
+
+# Test
+FROM node:20 as unit-tests
+
+WORKDIR /app
+
+# Copiar solo lo necesario para la instalación de dependencias
+COPY package*.json ./
+
+# Instalación de todas las dependencias (Incluidas las devDependencies)
+RUN npm ci
+
+# Copia de todo el código fuente (Incluyendo los tests)
+COPY . .
+
+RUN npm run test
+
+# Coverage
+FROM node:20 as coverage
+
+WORKDIR /app
+
+# Copiar solo lo necesario para la instalación de dependencias
+COPY package*.json ./
+
+# Instalación de todas las dependencias (Incluidas las devDependencies)
+RUN npm ci
+
+# Copia de todo el código fuente (Incluyendo los tests)
+COPY . .
+
+RUN npm run coverage
+
+# Build
+FROM node:20 as build
+
+WORKDIR /app
+
+# Copiar solo lo necesario para la instalación de dependencias
+COPY package*.json ./
+
+# Instalación de todas las dependencias (Incluidas las devDependencies)
+RUN npm ci
+
+# Copia de todo el código fuente (Incluyendo los tests)
+COPY . .
+
+RUN npm run build
