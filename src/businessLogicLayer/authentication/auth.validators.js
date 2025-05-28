@@ -12,13 +12,9 @@ login: [
         .trim()
         .notEmpty().withMessage('Password is required')
         .isLength({ min: 8 }).withMessage('Minimum 8 characters')
-        .matches(/[a-z]/).withMessage('Must contain lowercase letters')
-        .matches(/[A-Z]/).withMessage('Must contain uppercase letters')
-        .matches(/\d/).withMessage('Must contain numbers')
-        .matches(/[@$!%*?&]/).withMessage('Must contain special characters (@$!%*?&)')
     ],
 
-    register: [
+register: [
         body('name')
             .trim()
             .notEmpty().withMessage('Username is required')
