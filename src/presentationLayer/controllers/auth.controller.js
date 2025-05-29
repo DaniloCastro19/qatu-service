@@ -22,7 +22,8 @@ export const authenticationController = {
           token: result.token,
           expiresIn: envs.SESSION_INACTIVITY_TIMEOUT,
           user: {
-            id: result.user._id,
+            _id: result.user._id,
+            name: result.user.name,
             email: result.user.email,
             role: result.user.role
           }
