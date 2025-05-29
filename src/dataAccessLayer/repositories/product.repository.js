@@ -46,25 +46,21 @@ export const productRepository = {
     },
   
     async addRating(productId, userId, ratingValue) {
+      console.log(userId);
       const product = await Product.findById(productId);
       if (!product) return null;
   
-      // Asegúrate de que ratings sea un array
       if (!Array.isArray(product.ratings)) {
           product.ratings = [];
       }
   
-      // Verifica si el usuario ya calificó
       const existingRating = product.ratings.find(r => r.user.toString() === userId);
       if (existingRating) {
-          // Actualiza el rating existente
           existingRating.value = ratingValue;
       } else {
-          // Agrega un nuevo rating
           product.ratings.push({ user: userId, value: ratingValue });
       }
   
-      // Recalcula el promedio de ratings
       const total = product.ratings.reduce((acc, r) => acc + r.value, 0);
       product.rating = total / product.ratings.length;
   

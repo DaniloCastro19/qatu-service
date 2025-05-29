@@ -66,7 +66,6 @@ export const productController = {
             user: req.user.id,
             text: req.body.text
         };
-
         const updated = await productService.addComment(req.params.id, comment);
         if (!updated) return next(new AppError(404, 'Product not found'));
         res.status(200).json({ message: 'Comment added', data: updated });

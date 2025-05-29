@@ -1,4 +1,5 @@
 import { productRepository } from "../../dataAccessLayer/repositories/product.repository.js"
+import { orderService } from "./order.service.js";
 
 export const productService = {
     async getAllProducts(page, limit, orderBy, ascending, filters={}) {
@@ -38,6 +39,13 @@ export const productService = {
     },
         
     async addComment(productId, comment) {
+        // User already buy this product?
+        const hasPurchased = await orderService.hasUserPurchasedProduct(comment.user, productId);
+
+        if (!hasPurchased) {
+            throw new Error('You can only comment on products you have purchased.');
+        }
+    
         return await productRepository.addComment(productId, comment);
     },
         
@@ -46,6 +54,12 @@ export const productService = {
     },
 
     async addRating(productId, userId, ratingValue) {
+        //  User already buy this product?
+        const hasPurchased = await orderService.hasUserPurchasedProduct(userId, productId);
+        if (!hasPurchased) {
+            throw new Error('You can only rate products you have purchased.');
+        }
+    
         return await productRepository.addRating(productId, userId, ratingValue);
     },
     
