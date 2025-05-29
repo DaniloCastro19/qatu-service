@@ -68,6 +68,18 @@ export const productService = {
             throw new Error('Quantity must be greater than zero');
         }
     
-        return await productRepository.purchaseProduct(productId, quantity);
+        // Actualizar el stock del producto
+        const product = await productRepository.purchaseProduct(productId, quantity);
+    
+        // Calcular el precio total
+        const totalPrice = product.price * quantity;
+    
+        console.log(`Total price for ${quantity} of ${product.name}: $${totalPrice}`);
+    
+        // Crear un nuevo pedido
+        const sellerId = product.vendorId; // Asume que el producto tiene un `vendorId`
+        const order = await orderService.createOrder(userId, sellerId, productId, quantity, totalPrice);
+    
+        return order;
     }
 };

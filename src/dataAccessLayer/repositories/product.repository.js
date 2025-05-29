@@ -72,15 +72,26 @@ export const productRepository = {
     },
 
     async purchaseProduct(productId, quantity) {
-      const product = await Product.findById(productId);
-      if (!product) return null;
+      if (quantity <= 0) {
+          throw new Error('Quantity must be greater than zero');
+      }
   
+      // Verificar si el producto existe y tiene suficiente stock
+      const product = await Product.findById(productId);
+      if (!product) {
+          throw new Error('Product not found');
+      }
       if (product.amount < quantity) {
           throw new Error('Insufficient stock');
       }
   
+      // Actualizar el stock del producto
       product.amount -= quantity;
-      return product.save();
+  
+      // Guardar los cambios en el producto
+      await product.save();
+  
+      return product;
   }
 };   
 
