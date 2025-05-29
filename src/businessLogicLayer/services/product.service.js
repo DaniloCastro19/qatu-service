@@ -47,5 +47,13 @@ export const productService = {
 
     async addRating(productId, userId, ratingValue) {
         return await productRepository.addRating(productId, userId, ratingValue);
+    },
+    
+    async purchaseProduct(productId, userId, quantity) {
+        if (quantity <= 0) {
+            throw new Error('Quantity must be greater than zero');
+        }
+    
+        return await productRepository.purchaseProduct(productId, quantity);
     }
 };

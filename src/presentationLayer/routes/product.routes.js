@@ -28,5 +28,10 @@ productRoutes.post('/:id/rating',
     authorizeRoles(['customer', 'admin', 'seller']), 
     productController.addRating);
 productRoutes.post('/:id/rating', productController.addRating);
+productRoutes.post('/:id/purchase', 
+    passport.authenticate('jwt', { session: false }), 
+    authorizeRoles(['customer', 'admin', 'seller']), 
+    productController.purchaseProduct
+);
 
 export default productRoutes;

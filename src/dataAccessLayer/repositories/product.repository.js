@@ -73,7 +73,19 @@ export const productRepository = {
   
     async getRating(productId) {
       return Product.findById(productId).select('rating');
-    }
+    },
+
+    async purchaseProduct(productId, quantity) {
+      const product = await Product.findById(productId);
+      if (!product) return null;
+  
+      if (product.amount < quantity) {
+          throw new Error('Insufficient stock');
+      }
+  
+      product.amount -= quantity;
+      return product.save();
+  }
 };   
 
   const filterQuery =(filters={}) =>{

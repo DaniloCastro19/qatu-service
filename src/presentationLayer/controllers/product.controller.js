@@ -92,5 +92,19 @@ export const productController = {
         if (!product) return next(new AppError(404, 'Product not found'));
     
         res.status(200).json({ message: 'Rating added/updated', rating: product.rating });
-    })
+    }),
+
+    purchaseProduct: catchAsync(async (req, res, next) => {
+        const userId = req.user.id;
+        const { quantity } = req.body;
+    
+        if (!quantity || typeof quantity !== 'number' || quantity <= 0) {
+            return next(new AppError(400, 'Invalid quantity'));
+        }
+    
+        const product = await productService.purchaseProduct(req.params.id, userId, quantity);
+        if (!product) return next(new AppError(404, 'Product not found'));
+    
+        res.status(200).json({ message: 'Purchase successful', product });
+    }),
 };
