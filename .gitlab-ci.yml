@@ -2,7 +2,6 @@ stages:
   - test
   - unit-test
   - coverage
-  - build-image
   - push-image
 
 image: docker:24.0
@@ -80,14 +79,9 @@ build-container-image:
   script:
     - docker build --target build .
 
-build-container-image:
-  stage: build-image
-  script:
-    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
-    - docker build -t "$CI_REGISTRY_IMAGE:1.0" --target production .
-
 push-container-image:
   stage: push-image
   script:
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
+    - docker build -t "$CI_REGISTRY_IMAGE:1.0" --target production .
     - docker push "$CI_REGISTRY_IMAGE:1.0"
