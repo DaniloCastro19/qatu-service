@@ -2,6 +2,7 @@ stages:
   - test
   - unit-test
   - coverage
+  - build-image
   - push-image
 
 image: docker:24.0
