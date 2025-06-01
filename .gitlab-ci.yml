@@ -67,8 +67,9 @@ coverage-report:
 
 push-container-image:
   stage: push-image
-  image: node:20
+  image: docker:24.0
   before_script:
+    - apk add --no-cache nodejs npm
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
   script:
     - npm install -g semantic-release @semantic-release/changelog @semantic-release/git
