@@ -76,7 +76,7 @@ push-container-image:
     - npx semantic-release --dry-run
     - export NEW_VERSION=$(npx semantic-release --dry-run | grep "next release version is" | awk '{print $NF}')
     - if [ -z "$NEW_VERSION" ]; then export NEW_VERSION="1.0.0"; fi
-    - docker build -t "$CI_REGISTRY_IMAGE:$NEW_VERSION" --target production .
-    - docker push "$CI_REGISTRY_IMAGE:$NEW_VERSION"
-    - docker tag "$CI_REGISTRY_IMAGE:$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
+    - docker build -t "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" --target production .
+    - docker push "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION"
+    - docker tag "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
     - docker push "$CI_REGISTRY_IMAGE:latest"
