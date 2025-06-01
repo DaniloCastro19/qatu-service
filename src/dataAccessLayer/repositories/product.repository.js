@@ -31,7 +31,68 @@ export const productRepository = {
   
     async deleteProduct(id) {
       return Product.findByIdAndDelete(id);
-    }
+    },
+
+    async addComment(productId, comment) {
+      return Product.findByIdAndUpdate(
+        productId,
+        { $push: { comments: comment } },
+        { new: true }
+      );
+    },
+  
+    async getComments(productId) {
+      return Product.findById(productId).select('comments');
+    },
+  
+    async addRating(productId, userId, ratingValue) {
+      console.log(userId);
+      const product = await Product.findById(productId);
+      if (!product) return null;
+  
+      if (!Array.isArray(product.ratings)) {
+          product.ratings = [];
+      }
+  
+      const existingRating = product.ratings.find(r => r.user.toString() === userId);
+      if (existingRating) {
+          existingRating.value = ratingValue;
+      } else {
+          product.ratings.push({ user: userId, value: ratingValue });
+      }
+  
+      const total = product.ratings.reduce((acc, r) => acc + r.value, 0);
+      product.rating = total / product.ratings.length;
+  
+      return product.save();
+  },
+  
+    async getRating(productId) {
+      return Product.findById(productId).select('rating');
+    },
+
+    async purchaseProduct(productId, quantity) {
+      if (quantity <= 0) {
+          throw new Error('Quantity must be greater than zero');
+      }
+  
+      // Verificar si el producto existe y tiene suficiente stock
+      const product = await Product.findById(productId);
+      if (!product) {
+          throw new Error('Product not found');
+      }
+      if (product.amount < quantity) {
+          throw new Error('Insufficient stock');
+      }
+  
+      // Actualizar el stock del producto
+      product.amount -= quantity;
+  
+      // Guardar los cambios en el producto
+      await product.save();
+  
+      return product;
+  }
 };   
 
   const filterQuery =(filters={}) =>{
