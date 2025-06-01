@@ -82,3 +82,4 @@ push-container-image:
     
     - docker tag "$CI_REGISTRY_IMAGE:$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
     - docker push "$CI_REGISTRY_IMAGE:latest"
+    
