@@ -75,7 +75,6 @@ push-container-image:
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
   script:
     - npm install -g semantic-release @semantic-release/changelog @semantic-release/git
-    - echo "--- Existing tags ---"
     - git tag -l
     - npx semantic-release --dry-run
     - export NEW_VERSION=$(npx semantic-release --dry-run | grep "next release version is" | awk '{print $NF}')
