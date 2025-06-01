@@ -2,7 +2,6 @@ stages:
   - test
   - unit-test
   - coverage
-  - build-image
   - push-image
 
 image: docker:24.0
@@ -65,20 +64,6 @@ coverage-report:
   
   script:
     - docker build --target coverage .
-
-build-container-image:
-  stage: build-image
-  image: docker:24.0
-  services:
-    - name: docker:24.0-dind
-      alias: docker
-
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-
-  script:
-    - docker build --target build .
 
 push-container-image:
   stage: push-image
