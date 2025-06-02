@@ -35,6 +35,55 @@ test-app:
   script:
     - docker build --target builder .
 
+quality-gates:
+  stage: quality
+  image: 
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  script:
+    - |
+      # Esperar a que SonarQube procese el análisis
+      echo "Waiting for SonarQube analysis to complete..."
+      sleep 30
+      
+      # Obtener el estado del Quality Gate
+      TASK_URL=$(curl -s -u "$SONAR_TOKEN:" \
+        "$SONAR_HOST_URL/api/ce/component?component=$SONAR_PROJECT_KEY" \
+        | grep -o '"url":"[^"]*"' | head -1 | cut -d'"' -f4)
+      
+      if [ -n "$TASK_URL" ]; then
+        TASK_STATUS=""
+        while [ "$TASK_STATUS" != "SUCCESS" ] && [ "$TASK_STATUS" != "FAILED" ]; do
+          sleep 10
+          TASK_STATUS=$(curl -s -u "$SONAR_TOKEN:" "$TASK_URL" \
+            | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+          echo "Task status: $TASK_STATUS"
+        done
+      fi
+      
+      # Verificar Quality Gate
+      QG_STATUS=$(curl -s -u "$SONAR_TOKEN:" \
+        "$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY" \
+        | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+      
+      echo "Quality Gate Status: $QG_STATUS"
+      
+      if [ "$QG_STATUS" = "OK" ]; then
+        echo "Quality Gate passed successfully!"
+        exit 0
+      else
+        echo "Quality Gate failed!"
+        echo "Check the quality issues at: $SONAR_HOST_URL/dashboard?id=$SONAR_PROJECT_KEY"
+        exit 1
+      fi
+  dependencies:
+    - static-code-analysis
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+
 push-image:
   stage: push
   script:
