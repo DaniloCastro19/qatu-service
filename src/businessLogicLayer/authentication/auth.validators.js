@@ -11,15 +11,13 @@ login: [
         body('password')
         .trim()
         .notEmpty().withMessage('Password is required')
-        .isLength({ min: 8 }).withMessage('Minimum 8 characters')
+        .isLength({ min: 6 }).withMessage('Minimum 6 characters')
     ],
 
 register: [
         body('name')
             .trim()
             .notEmpty().withMessage('Username is required')
-            .isLength({ min: 3, max: 20 }).withMessage('Username must be between 3 and 20 characters')
-            .isAlphanumeric('en-US', { ignore: '_-' }).withMessage('Username can only contain letters, numbers, underscores and hyphens')
             .custom(value => /^[a-zA-Z]/.test(value)).withMessage('Username must start with a letter')
             .custom(value => !/^\d+$/.test(value)).withMessage('Username cannot be numbers only')
             .custom(value => !/^[^a-zA-Z0-9]+$/.test(value)).withMessage('Username cannot be special characters only'),
