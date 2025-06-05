@@ -33,20 +33,14 @@ test-app:
   script:
     - docker build --target builder .
   artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage/cobertura-coverage.xml
     paths:
       - coverage/
-    expire_in: 1 week
+
 
 sonar_analysis:
   stage: sonar_analysis
   image:
     name: sonarsource/sonar-scanner-cli:11.3.1.1910_7.1.0
-    entrypoint: [""]
-  before_script: []
   script:
     - sonar-scanner  
       -Dsonar.projectKey="qatu-service"
