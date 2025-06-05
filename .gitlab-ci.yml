@@ -31,8 +31,8 @@ test-app:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
   script:
-    - docker build --target builder .
-    - docker create --name temp-container $CI_REGISTRY_IMAGE:builder
+    - docker build --target builder -t local-builder .
+    - docker create --name temp-container local-builder
     - docker cp temp-container:/app/coverage ./coverage
     - docker rm temp-container
   artifacts:
