@@ -19,8 +19,6 @@ before_script:
 
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: always
 
 test-app:
   stage: test
