@@ -1,5 +1,6 @@
 stages:
   - test
+  - sonar_analysis
   - push-image
 
 image: docker:24.0
@@ -24,14 +25,39 @@ test-app:
   services:
     - name: docker:24.0-dind
       alias: docker
-
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-  
-
   script:
-    - docker build --target builder .
+    - docker build --target builder -t local-builder .
+    - docker create --name temp-container local-builder
+    - docker cp temp-container:/app/coverage ./coverage
+    - docker rm temp-container
+  artifacts:
+    paths:
+      - coverage/
+
+sonar_analysis:
+  stage: sonar_analysis
+  image:
+    name: sonarsource/sonar-scanner-cli:11.3.1.1910_7.1.0
+    entrypoint: [""]
+  before_script: []
+  script:
+    - sonar-scanner  
+      -Dsonar.projectKey="qatu-service"
+      -Dsonar.sources=src
+      -Dsonar.host.url=$SONAR_HOST_URL    
+      -Dsonar.login=$SONAR_TOKEN    
+      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info    
+      -Dsonar.qualitygate.wait=true  
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  allow_failure: true
+  dependencies:
+    - test-app
 
 push-container-image:
   stage: push-image
@@ -54,3 +80,5 @@ push-container-image:
     - docker push "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION"
     - docker tag "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
     - docker push "$CI_REGISTRY_IMAGE:latest"
+  dependencies:
+    - sonar_analysis
