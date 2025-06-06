@@ -1,5 +1,5 @@
 # Build & Test
-FROM node:20 as builder
+FROM node:20 AS builder
 
 WORKDIR /app
 
