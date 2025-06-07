@@ -64,6 +64,7 @@ push-container-image:
   image: docker:24.0
   only:
     - main
+    - feature/Devops-update-backend-ci-fix
   variables:
     GIT_DEPTH: 0
     DOCKER_HOST: tcp://docker:2375
