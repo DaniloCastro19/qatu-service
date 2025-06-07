@@ -62,8 +62,6 @@ sonar_analysis:
 push-container-image:
   stage: push-image
   image: docker:24.0
-  only:
-    - main
   variables:
     GIT_DEPTH: 0
     DOCKER_HOST: tcp://docker:2375
