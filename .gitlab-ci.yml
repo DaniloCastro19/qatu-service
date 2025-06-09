@@ -89,6 +89,7 @@ acceptance-tests:
     - docker run -d -p 3000:3000 --name acceptance-container "$CI_REGISTRY_IMAGE:DEV-$VERSION"
     - sleep 10
     - |
+      bash -c '
       endpoints="/users /auth/login /products/ /orders/buyer /orders /products?name=true&asce=true"
       for endpoint in $endpoints; do
         echo "Testing $endpoint"
@@ -100,10 +101,12 @@ acceptance-tests:
           exit 1
         fi
       done
-    - echo "All tests passed"
-    - docker stop acceptance-container && docker rm acceptance-container
+      echo "All tests passed"
+      docker stop acceptance-container && docker rm acceptance-container
+      '
   dependencies:
     - push-container-image
+
 
 retag-and-push-LTS:
   stage: deliver
