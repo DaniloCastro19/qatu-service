@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 echo "Starting acceptance tests in 15s..."
@@ -15,6 +15,8 @@ API_URL="${API_URL:-http://${HOST}:${PORT}}"
 # Obtener token de autenticación
 echo "Obteniendo token de autenticación..."
 echo "APi url base $API_URL"
+echo "DEBUG: probando conexión a $API_URL/QatuService/v1/products"
+curl -v "$API_URL/QatuService/v1/products"
 # TOKEN=$(curl -s -X POST "$API_URL/QatuService/v1/auth/login" \
 #   -H "Content-Type: application/json" \
 #   -d '{
@@ -50,13 +52,13 @@ echo "APi url base $API_URL"
 # echo "Token obtenido: $TOKEN"
 
 # Endpoints públicos (no requieren autenticación)
-public_endpoints=(
-#   "/QatuService/v1/users"
-  "/QatuService/v1/products"
-  "/QatuService/v1/users"
+public_endpoints="
+  /QatuService/v1/products
+  /QatuService/v1/users
+"
+#     "/QatuService/v1/users"
 #   "/QatuService/v1/products/681fbfd69e960b0f52797008"
 #   "/QatuService/v1/products/681fbfd69e960b0f52797008/comments"
-)
 
 # Endpoints privados (requieren token)
 # private_endpoints=(
@@ -66,12 +68,12 @@ public_endpoints=(
 # )
 
 # Probar endpoints públicos
-for endpoint in "${public_endpoints[@]}"; do
+for endpoint in $public_endpoints; do
   echo "Testing $endpoint"
   status_code=$(curl -s -o /dev/null -w "%{http_code}" \
     -H "Content-Type: application/json" \
     "$API_URL$endpoint")
-  
+
   if [ "$status_code" -ne 200 ]; then
     echo "Error en $endpoint: Código $status_code"
     exit 1
