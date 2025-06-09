@@ -5,7 +5,7 @@ echo "Starting acceptance tests in 15s..."
 sleep 15  # Esperar inicialización de servicios
 [ -f .env ] && export $(grep -v '^#' .env | xargs)
 
-API_URL="http://${HOST}:${PORT}"
+API_URL="${API_URL:-http://${HOST}:${PORT}}"
 # API_URL="http://localhost:3005"
 
 # Crear admin
@@ -30,24 +30,24 @@ fi
 echo "Token obtenido: $TOKEN"
 
 
-PRODUCT=$(curl -s -X POST "$API_URL/QatuService/v1/products" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Paldo Handler",
-    "description": "mi descripcion",
-    "imageUrl": "https://placehold.co/600x400/000000/FFFFFF/png",
-    "price": 50,
-    "amount": 34,
-    "category":"Sodas",
-    "vendorId":"68194fdd262185e14c3506f6"
-  }' | jq -r '.data.token')
+# PRODUCT=$(curl -s -X POST "$API_URL/QatuService/v1/products" \
+#   -H "Content-Type: application/json" \
+#   -d '{
+#     "name": "Paldo Handler",
+#     "description": "mi descripcion",
+#     "imageUrl": "https://placehold.co/600x400/000000/FFFFFF/png",
+#     "price": 50,
+#     "amount": 34,
+#     "category":"Sodas",
+#     "vendorId":"68194fdd262185e14c3506f6"
+#   }' | jq -r '.data.token')
 
-if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-  echo "Error al obtener token de autenticación"
-  exit 1
-fi
+# if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+#   echo "Error al obtener token de autenticación"
+#   exit 1
+# fi
 
-echo "Token obtenido: $TOKEN"
+# echo "Token obtenido: $TOKEN"
 
 # Endpoints públicos (no requieren autenticación)
 public_endpoints=(

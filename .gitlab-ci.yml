@@ -13,8 +13,6 @@ services:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
-  HOST: "localhost"
-  PORT: "3005"
 
 before_script:
   - apk add --no-cache nodejs npm
@@ -89,10 +87,18 @@ push-container-image:
 acceptance-tests:
   stage: acceptance-tests
   image: alpine:3.18
+  services:
+    - name: $CI_REGISTRY_IMAGE:DEV-$NEW_VERSION
+      alias: app
+    - name: mongo:8.0
+      alias: mongo
+  variables:
+    HOST: "app"
+    PORT: "3000"
   before_script:
     - apk add --no-cache bash jq curl
     - chmod +x ./acceptance-tests.sh
   script:
     - ./acceptance-tests.sh
   dependencies:
-    - test-app
+    - push-container-image
