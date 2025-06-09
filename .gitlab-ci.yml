@@ -2,6 +2,8 @@ stages:
   - test
   - sonar_analysis
   - push-image
+  - acceptance
+  - deliver
 
 image: docker:24.0
 
@@ -81,4 +83,47 @@ push-container-image:
     - docker tag "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
     - docker push "$CI_REGISTRY_IMAGE:latest"
   dependencies:
-    - sonar_analysis
+    - sonar_analysisacceptance-tests:
+  
+  stage: acceptance
+  image: curlimages/curl:7.78.0
+
+  script:
+    - export VERSION=$(cat version.txt)
+    - echo "Testing image: DEV-$VERSION"
+    - docker pull "$CI_REGISTRY_IMAGE:DEV-$VERSION"
+    - docker run -d -p 3000:3000 --name acceptance-container "$CI_REGISTRY_IMAGE:DEV-$VERSION"
+    - sleep 10  # WAIT TIME FOR THE CONTAINER TO START
+    - |
+      endpoints="/users /auth/login /products/ /orders/buyer /orders /products?name=true&asce=true"
+      for endpoint in $endpoints; do
+        echo "Testing $endpoint"
+        status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/QatuService/v1$endpoint)
+        if [ "$status" -ne 200 ]; then
+          echo "Fail in $endpoint with $status"
+          docker logs acceptance-container
+          docker stop acceptance-container && docker rm acceptance-container
+          exit 1
+        fi
+      done
+    - echo "All tests passed"
+    - docker stop acceptance-container && docker rm acceptance-container
+  dependencies:
+    - push-container-image
+
+retag-and-push-LTS:
+  stage: deliver
+  image: docker:24.0
+  only:
+    - main
+  before_script:
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
+  script:
+    - export VERSION=$(cat version.txt)
+    - echo "DEV-$VERSION to LTS-$VERSION"
+    - docker pull "$CI_REGISTRY_IMAGE:DEV-$VERSION"
+    - docker tag "$CI_REGISTRY_IMAGE:DEV-$VERSION" "$CI_REGISTRY_IMAGE:LTS-$VERSION"
+    - docker push "$CI_REGISTRY_IMAGE:LTS-$VERSION"
+  dependencies:
+    - acceptance-tests
+
