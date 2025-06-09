@@ -12,7 +12,7 @@ import { globalErrorHandler } from './helpers/globalErrorHandler.js';
 export const API_PREFIX = "/QatuService/v1";
 
 
-const app = express();
+export const app = express();
 
 app.use(cors({
     origin: envs.CLIENT_URL,
