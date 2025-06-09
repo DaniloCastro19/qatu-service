@@ -1,0 +1,6 @@
+projectKey=qatu-service
+serverUrl=https://esveltica-sonarqube.devops.jala.university
+serverVersion=9.9.8.100196
+dashboardUrl=https://esveltica-sonarqube.devops.jala.university/dashboard?id=qatu-service
+ceTaskId=AZc3H-eyZiMi-ZQGKE9U
+ceTaskUrl=https://esveltica-sonarqube.devops.jala.university/api/ce/task?id=AZc3H-eyZiMi-ZQGKE9U

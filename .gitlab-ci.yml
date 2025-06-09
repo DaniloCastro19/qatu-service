@@ -1,7 +1,9 @@
 stages:
   - test
   - sonar_analysis
-  - push
+  - push-image
+  - acceptance
+  - deliver
 
 image: docker:24.0
 
@@ -61,11 +63,62 @@ sonar_analysis:
   dependencies:
     - test-app
 
-push-image:
-  stage: push
+push-container-image:
+  stage: push-image
   script:
     - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
-    - docker build -t "$CI_REGISTRY_IMAGE:1.0" --target production .
-    - docker push "$CI_REGISTRY_IMAGE:1.0"
+    - export VERSION=$(cat version.txt)
+    - docker build -t "$CI_REGISTRY_IMAGE:DEV-$VERSION" --target production .
+    - docker push "$CI_REGISTRY_IMAGE:DEV-$VERSION"
   dependencies:
     - sonar_analysis
+
+acceptance-tests:
+  stage: acceptance
+  image: curlimages/curl:7.78.0
+  services:
+    - name: docker:24.0-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - export VERSION=$(cat version.txt)
+    - docker pull "$CI_REGISTRY_IMAGE:DEV-$VERSION"
+    - docker run -d -p 3000:3000 --name acceptance-container "$CI_REGISTRY_IMAGE:DEV-$VERSION"
+    - sleep 10
+    - >
+      endpoints="/users /auth/login /products/ /orders/buyer /orders /products?name=true&asce=true";
+      for endpoint in $endpoints; do
+        echo "Testing $endpoint";
+        status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/QatuService/v1$endpoint);
+        if [ "$status" -ne 200 ]; then
+          echo "Fail in $endpoint with $status";
+          docker logs acceptance-container;
+          docker stop acceptance-container && docker rm acceptance-container;
+          exit 1;
+        fi;
+      done;
+      echo "All tests passed";
+      docker stop acceptance-container && docker rm acceptance-container;
+  dependencies:
+    - push-container-image
+
+
+
+retag-and-push-LTS:
+  stage: deliver
+  image: docker:24.0
+  only:
+    - main
+  before_script:
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
+  script:
+    - export VERSION=$(cat version.txt)
+    - echo "DEV-$VERSION to LTS-$VERSION"
+    - docker pull "$CI_REGISTRY_IMAGE:DEV-$VERSION"
+    - docker tag "$CI_REGISTRY_IMAGE:DEV-$VERSION" "$CI_REGISTRY_IMAGE:LTS-$VERSION"
+    - docker push "$CI_REGISTRY_IMAGE:LTS-$VERSION"
+  dependencies:
+    - acceptance-tests
+
