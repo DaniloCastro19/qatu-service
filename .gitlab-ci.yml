@@ -20,6 +20,8 @@ before_script:
 
 workflow:
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
 
 test-app:
   stage: test
@@ -63,37 +65,29 @@ sonar_analysis:
 
 push-container-image:
   stage: push-image
-  image: docker:24.0
-  only:
-    - main
-  variables:
-    GIT_DEPTH: 0
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-  before_script:
-    - apk add --no-cache nodejs npm
-    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
   script:
-    - npm install -g semantic-release @semantic-release/changelog @semantic-release/git
-    - npx semantic-release --dry-run
-    - export NEW_VERSION=$(npx semantic-release --dry-run | grep "next release version is" | awk '{print $NF}')
-    - if [ -z "$NEW_VERSION" ]; then export NEW_VERSION="1.0.0"; fi
-    - docker build -t "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" --target production .
-    - docker push "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION"
-    - docker tag "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
-    - docker push "$CI_REGISTRY_IMAGE:latest"
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
+    - export VERSION=$(cat version.txt)
+    - docker build -t "$CI_REGISTRY_IMAGE:DEV-$VERSION" --target production .
+    - docker push "$CI_REGISTRY_IMAGE:DEV-$VERSION"
   dependencies:
-    - sonar_analysisacceptance-tests:
-  
+    - sonar_analysis
+
+acceptance-tests:
   stage: acceptance
   image: curlimages/curl:7.78.0
-
+  services:
+    - name: docker:24.0-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   script:
     - export VERSION=$(cat version.txt)
     - echo "Testing image: DEV-$VERSION"
     - docker pull "$CI_REGISTRY_IMAGE:DEV-$VERSION"
     - docker run -d -p 3000:3000 --name acceptance-container "$CI_REGISTRY_IMAGE:DEV-$VERSION"
-    - sleep 10  # WAIT TIME FOR THE CONTAINER TO START
+    - sleep 10
     - |
       endpoints="/users /auth/login /products/ /orders/buyer /orders /products?name=true&asce=true"
       for endpoint in $endpoints; do
