@@ -84,28 +84,26 @@ acceptance-tests:
     DOCKER_TLS_CERTDIR: ""
   script:
     - export VERSION=$(cat version.txt)
-    - echo "Testing image: DEV-$VERSION"
     - docker pull "$CI_REGISTRY_IMAGE:DEV-$VERSION"
     - docker run -d -p 3000:3000 --name acceptance-container "$CI_REGISTRY_IMAGE:DEV-$VERSION"
     - sleep 10
-    - |
-      bash -c '
-      endpoints="/users /auth/login /products/ /orders/buyer /orders /products?name=true&asce=true"
+    - >
+      endpoints="/users /auth/login /products/ /orders/buyer /orders /products?name=true&asce=true";
       for endpoint in $endpoints; do
-        echo "Testing $endpoint"
-        status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/QatuService/v1$endpoint)
+        echo "Testing $endpoint";
+        status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/QatuService/v1$endpoint);
         if [ "$status" -ne 200 ]; then
-          echo "Fail in $endpoint with $status"
-          docker logs acceptance-container
-          docker stop acceptance-container && docker rm acceptance-container
-          exit 1
-        fi
-      done
-      echo "All tests passed"
-      docker stop acceptance-container && docker rm acceptance-container
-      '
+          echo "Fail in $endpoint with $status";
+          docker logs acceptance-container;
+          docker stop acceptance-container && docker rm acceptance-container;
+          exit 1;
+        fi;
+      done;
+      echo "All tests passed";
+      docker stop acceptance-container && docker rm acceptance-container;
   dependencies:
     - push-container-image
+
 
 
 retag-and-push-LTS:
