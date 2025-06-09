@@ -53,6 +53,7 @@ echo "APi url base $API_URL"
 public_endpoints=(
 #   "/QatuService/v1/users"
   "/QatuService/v1/products"
+  "/QatuService/v1/users"
 #   "/QatuService/v1/products/681fbfd69e960b0f52797008"
 #   "/QatuService/v1/products/681fbfd69e960b0f52797008/comments"
 )
