@@ -88,15 +88,11 @@ push-container-image:
 
 acceptance-tests:
   stage: acceptance-tests
-  image: curlimages/curl:8.7.1
-  services:
-    - name: docker:24.0-dind
-      alias: docker
+  image: alpine:3.18
   before_script:
-    - apk add --no-cache bash jq
+    - apk add --no-cache bash jq curl
     - chmod +x ./acceptance-tests.sh
   script:
     - ./acceptance-tests.sh
   dependencies:
     - test-app
-
