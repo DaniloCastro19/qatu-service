@@ -14,6 +14,7 @@ API_URL="http://${HOST}:${PORT}"
 
 # Obtener token de autenticación
 echo "Obteniendo token de autenticación..."
+echo "APi url base $API_URL"
 TOKEN=$(curl -s -X POST "$API_URL/QatuService/v1/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
