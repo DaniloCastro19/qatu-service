@@ -62,7 +62,7 @@ sonar_analysis:
 
 acceptance-tests:
   stage: acceptance-tests
-  image: registry.gitlab.com/jala-university1/cohort-2/oficial-es-desarrollo-de-software-4-cssd-245.ga.t1.25.m2/secci-n-a/union-sveltica/qatu-service:latest
+  image: alpine:3.18
   services:
     - name: $CI_REGISTRY_IMAGE:DEV-$NEW_VERSION
       alias: app
