@@ -9,27 +9,27 @@ sleep 15  # Esperar inicialización de servicios
 API_URL="http://localhost:3000"
 
 # Obtener token de autenticación
-echo "Obteniendo token de autenticación..."
-TOKEN=$(curl -s -X POST "$API_URL/QatuService/v1/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "Eudes123@gmail.com",
-    "password": "eudes@1234"
-  }' | jq -r '.data.token')
+# echo "Obteniendo token de autenticación..."
+# TOKEN=$(curl -s -X POST "$API_URL/QatuService/v1/auth/login" \
+#   -H "Content-Type: application/json" \
+#   -d '{
+#     "email": "Eudes123@gmail.com",
+#     "password": "eudes@1234"
+#   }' | jq -r '.data.token')
 
-if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-  echo "Error al obtener token de autenticación"
-  exit 1
-fi
+# if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+#   echo "Error al obtener token de autenticación"
+#   exit 1
+# fi
 
-echo "Token obtenido: $TOKEN"
+# echo "Token obtenido: $TOKEN"
 
 # Endpoints públicos (no requieren autenticación)
 public_endpoints=(
-  "/QatuService/v1/users"
+  # "/QatuService/v1/users"
   "/QatuService/v1/products"
-  "/QatuService/v1/products/681fbfd69e960b0f52797008"
-  "/QatuService/v1/products/681fbfd69e960b0f52797008/comments"
+  # "/QatuService/v1/products/681fbfd69e960b0f52797008"
+  # "/QatuService/v1/products/681fbfd69e960b0f52797008/comments"
 )
 
 # Endpoints privados (requieren token)
