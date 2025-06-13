@@ -25,19 +25,28 @@ API_URL="http://localhost:3000"
 # echo "Token obtenido: $TOKEN"
 
 # Endpoints públicos (no requieren autenticación)
-public_endpoints=(
-  # "/QatuService/v1/users"
-  "/QatuService/v1/products"
-  # "/QatuService/v1/products/681fbfd69e960b0f52797008"
-  # "/QatuService/v1/products/681fbfd69e960b0f52797008/comments"
-)
+# public_endpoints=(
+#   "/QatuService/v1/users"
+#   "/QatuService/v1/products"
+#   "/QatuService/v1/products/681fbfd69e960b0f52797008"
+#   "/QatuService/v1/products/681fbfd69e960b0f52797008/comments"
+# )
+
+public_endpoints="
+  /QatuService/v1/products
+"
 
 # Endpoints privados (requieren token)
-private_endpoints=(
-  "/QatuService/v1/applications"
-  "/QatuService/v1/applications/6846177c398d6718b3f1899c"
-  "/QatuService/v1/users/68194cd758e1d6ee61fe26d4"
-)
+# private_endpoints=(
+#   "/QatuService/v1/applications"
+#   "/QatuService/v1/applications/6846177c398d6718b3f1899c"
+#   "/QatuService/v1/users/68194cd758e1d6ee61fe26d4"
+# )
+private_endpoints="
+  /QatuService/v1/applications
+  /QatuService/v1/applications/6846177c398d6718b3f1899c
+  /QatuService/v1/users/68194cd758e1d6ee61fe26d4
+"
 
 # Probar endpoints públicos
 for endpoint in "${public_endpoints[@]}"; do
