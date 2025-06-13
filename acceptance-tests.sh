@@ -49,32 +49,36 @@ private_endpoints="
 "
 
 # Probar endpoints públicos
-for endpoint in "${public_endpoints[@]}"; do
-  echo "Testing $endpoint"
-  status_code=$(curl -s -o /dev/null -w "%{http_code}" \
-    -H "Content-Type: application/json" \
-    "$API_URL$endpoint")
-  
-  if [ "$status_code" -ne 200 ]; then
-    echo "Error en $endpoint: Código $status_code"
-    exit 1
-  fi
-  echo "$endpoint (200 OK)"
+echo "$public_endpoints" | while IFS= read -r endpoint; do
+    [ -z "$endpoint" ] && continue  # Saltar líneas vacías
+    
+    echo "Testing $endpoint"
+    status_code=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "Content-Type: application/json" \
+        "$API_URL$endpoint")
+    
+    if [ "$status_code" -ne 200 ]; then
+        echo "Error en $endpoint: Código $status_code"
+        exit 1
+    fi
+    echo "$endpoint (200 OK)"
 done
 
 # Probar endpoints privados
-for endpoint in "${private_endpoints[@]}"; do
-  echo "Testing $endpoint"
-  status_code=$(curl -s -o /dev/null -w "%{http_code}" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $TOKEN" \
-    "$API_URL$endpoint")
-  
-  if [ "$status_code" -ne 200 ]; then
-    echo "Error en $endpoint: Código $status_code"
-    exit 1
-  fi
-  echo "$endpoint (200 OK)"
+echo "$private_endpoints" | while IFS= read -r endpoint; do
+    [ -z "$endpoint" ] && continue  # Saltar líneas vacías
+    
+    echo "Testing $endpoint"
+    status_code=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $TOKEN" \
+        "$API_URL$endpoint")
+    
+    if [ "$status_code" -ne 200 ]; then
+        echo "Error en $endpoint: Código $status_code"
+        exit 1
+    fi
+    echo "$endpoint (200 OK)"
 done
 
 echo "Todas las pruebas pasaron!"
