@@ -91,4 +91,4 @@ acceptance-tests:
   script:
     - ./acceptance-tests.sh
   dependencies:
-    - push-container-image
+    - push
