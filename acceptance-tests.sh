@@ -11,8 +11,8 @@ TEST_EMAIL="test_$TIMESTAMP@example.com"
 TEST_PASSWORD="TestPassword1234@"
 
 [ -f .env ] && export $(grep -v '^#' .env | xargs)
-API_URL="http://localhost:3000"
-
+# API_URL="http://localhost:3000"
+API_URL="http://${HOST}:${PORT}"
 # Create unique test user
 echo "Creating test user..."
 RESPONSE=$(curl -s -X POST "$API_URL/QatuService/v1/users" \
