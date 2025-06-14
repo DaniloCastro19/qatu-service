@@ -96,7 +96,7 @@ acceptance-tests:
   before_script:
     - apk add --no-cache bash jq curl
     - chmod +x ./acceptance-tests.sh
-    - echo "Versión recibida: $NEW_VERSION"
+    - echo "Versión recibida $NEW_VERSION"
   script:
     - ./acceptance-tests.sh
   dependencies:
