@@ -2,55 +2,68 @@
 set -e
 
 echo "Starting acceptance tests in 15s..."
-sleep 15  # Esperar inicialización de servicios
-[ -f .env ] && export $(grep -v '^#' .env | xargs)
+sleep 15
 
-# API_URL="http://${HOST}:${PORT}"
+# Generate unique test credentials using timestamp
+TIMESTAMP=$(date +%s)
+TEST_USER="TestUser_$TIMESTAMP"
+TEST_EMAIL="test_$TIMESTAMP@example.com"
+TEST_PASSWORD="TestPassword1234@"
+
+[ -f .env ] && export $(grep -v '^#' .env | xargs)
 API_URL="http://localhost:3000"
 
-# Obtener token de autenticación
-# echo "Obteniendo token de autenticación..."
-# TOKEN=$(curl -s -X POST "$API_URL/QatuService/v1/auth/login" \
-#   -H "Content-Type: application/json" \
-#   -d '{
-#     "email": "Eudes123@gmail.com",
-#     "password": "eudes@1234"
-#   }' | jq -r '.data.token')
+# Create unique test user
+echo "Creating test user..."
+RESPONSE=$(curl -s -X POST "$API_URL/QatuService/v1/users" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "'"$TEST_USER"'",
+    "email": "'"$TEST_EMAIL"'",
+    "role": "admin",
+    "password": "'"$TEST_PASSWORD"'"
+  }')
 
-# if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-#   echo "Error al obtener token de autenticación"
-#   exit 1
-# fi
+echo "User creation response:"
+echo "$RESPONSE" | jq .
 
-# echo "Token obtenido: $TOKEN"
+USER_ID=$(echo "$RESPONSE" | jq -r '.data.id')
+if [ -z "$USER_ID" ] || [ "$USER_ID" = "null" ]; then
+  echo "Error: User creation failed"
+  exit 1
+fi
+echo "Created user ID: $USER_ID"
 
-# Endpoints públicos (no requieren autenticación)
-# public_endpoints=(
-#   "/QatuService/v1/users"
-#   "/QatuService/v1/products"
-#   "/QatuService/v1/products/681fbfd69e960b0f52797008"
-#   "/QatuService/v1/products/681fbfd69e960b0f52797008/comments"
-# )
+# Get authentication token
+echo "Getting authentication token..."
+LOGIN_RESPONSE=$(curl -s -X POST "$API_URL/QatuService/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "'"$TEST_EMAIL"'",
+    "password": "'"$TEST_PASSWORD"'"
+  }')
 
+TOKEN=$(echo "$LOGIN_RESPONSE" | jq -r '.data.token')
+if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+  echo "Error: Failed to get authentication token"
+  echo "Login response:"
+  echo "$LOGIN_RESPONSE" | jq .
+  exit 1
+fi
+echo "Token obtained: $TOKEN"
+
+# Define endpoints to test
 public_endpoints="
-  /QatuService/v1/products
+/QatuService/v1/products
 "
 
-# Endpoints privados (requieren token)
-# private_endpoints=(
-#   "/QatuService/v1/applications"
-#   "/QatuService/v1/applications/6846177c398d6718b3f1899c"
-#   "/QatuService/v1/users/68194cd758e1d6ee61fe26d4"
-# )
 private_endpoints="
-  /QatuService/v1/applications
-  /QatuService/v1/applications/6846177c398d6718b3f1899c
-  /QatuService/v1/users/68194cd758e1d6ee61fe26d4
+/QatuService/v1/users
 "
 
-# Probar endpoints públicos
+# Test public endpoints
 echo "$public_endpoints" | while IFS= read -r endpoint; do
-    [ -z "$endpoint" ] && continue  # Saltar líneas vacías
+    [ -z "$endpoint" ] && continue
     
     echo "Testing $endpoint"
     status_code=$(curl -s -o /dev/null -w "%{http_code}" \
@@ -58,15 +71,15 @@ echo "$public_endpoints" | while IFS= read -r endpoint; do
         "$API_URL$endpoint")
     
     if [ "$status_code" -ne 200 ]; then
-        echo "Error en $endpoint: Código $status_code"
+        echo "ERROR: $endpoint returned $status_code"
         exit 1
     fi
     echo "$endpoint (200 OK)"
 done
 
-# Probar endpoints privados
+# Test private endpoints
 echo "$private_endpoints" | while IFS= read -r endpoint; do
-    [ -z "$endpoint" ] && continue  # Saltar líneas vacías
+    [ -z "$endpoint" ] && continue
     
     echo "Testing $endpoint"
     status_code=$(curl -s -o /dev/null -w "%{http_code}" \
@@ -75,10 +88,10 @@ echo "$private_endpoints" | while IFS= read -r endpoint; do
         "$API_URL$endpoint")
     
     if [ "$status_code" -ne 200 ]; then
-        echo "Error en $endpoint: Código $status_code"
+        echo "ERROR: $endpoint returned $status_code"
         exit 1
     fi
     echo "$endpoint (200 OK)"
 done
 
-echo "Todas las pruebas pasaron!"
+echo "All tests passed successfully!"
