@@ -1,8 +1,8 @@
 stages:
   - test
   - sonar_analysis
-  - acceptance-tests
   - push
+  - acceptance-tests
 
 image: docker:24.0
 
@@ -57,6 +57,23 @@ sonar_analysis:
   dependencies:
     - test-app
 
+push-image:
+  stage: push
+  image: docker:24.0
+  only:
+    - main
+  before_script:
+    - apk add --no-cache nodejs npm
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
+  script:
+    - NEW_VERSION=$(node -p "require('./package.json').version")
+    - docker build -t "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" --target production .
+    - docker push "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION"
+    - docker tag "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
+    - docker push "$CI_REGISTRY_IMAGE:latest"
+  dependencies:
+    - sonar_analysis
+
 acceptance-tests:
   stage: acceptance-tests
   image: alpine:3.18
@@ -75,20 +92,3 @@ acceptance-tests:
     - ./acceptance-tests.sh
   dependencies:
     - push-container-image
-
-push-image:
-  stage: push
-  image: docker:24.0
-  only:
-    - main
-  before_script:
-    - apk add --no-cache nodejs npm
-    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
-  script:
-    - NEW_VERSION=$(node -p "require('./package.json').version")
-    - docker build -t "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" --target production .
-    - docker push "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION"
-    - docker tag "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" "$CI_REGISTRY_IMAGE:latest"
-    - docker push "$CI_REGISTRY_IMAGE:latest"
-  dependencies:
-    - sonar_analysis
