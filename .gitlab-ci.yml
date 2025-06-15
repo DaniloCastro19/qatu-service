@@ -2,6 +2,7 @@ stages:
   - test
   - sonar_analysis
   - push
+  - release
 
 image: docker:24.0
 
@@ -72,3 +73,21 @@ push-image:
     - docker push "$CI_REGISTRY_IMAGE:latest"
   dependencies:
     - sonar_analysis
+
+release-backend:
+  stage: release
+  image: docker:24.0
+  only:
+    - main
+  before_script:
+    - apk add --no-cache nodejs npm
+    - echo "$REGISTRY_TOKEN" | docker login registry.gitlab.com -u $LOGIN_USER --password-stdin
+  script:
+    - NEW_VERSION=$(node -p "require('./package.json').version")
+    - docker pull "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION"
+    - docker tag "$CI_REGISTRY_IMAGE:DEV-$NEW_VERSION" "$CI_REGISTRY_IMAGE:LTS-$NEW_VERSION"
+    - docker push "$CI_REGISTRY_IMAGE:LTS-$NEW_VERSION"
+  dependencies:
+    - sonar_analysis
+  artifacts:
+    expire_in: 1h
