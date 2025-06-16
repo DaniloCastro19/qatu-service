@@ -10,9 +10,17 @@ TEST_USER="TestUser_$TIMESTAMP"
 TEST_EMAIL="test_$TIMESTAMP@example.com"
 TEST_PASSWORD="TestPassword1234@"
 
-[ -f .env ] && export $(grep -v '^#' .env | xargs)
+# [ -f .env ] && export $(grep -v '^#' .env | xargs)
 # API_URL="http://localhost:3000"
 API_URL="http://${HOST}:${PORT}"
+echo "Testing API at: ${API_URL}"
+
+echo "Checking MongoDB connection..."
+if ! nc -z mongo 27017; then
+  echo "ERROR: MongoDB is not reachable at mongo:27017"
+  exit 1
+fi
+
 # Create unique test user
 echo "Creating test user..."
 RESPONSE=$(curl -s -X POST "$API_URL/QatuService/v1/users" \
