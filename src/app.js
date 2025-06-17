@@ -24,6 +24,10 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(API_PREFIX, router);
 
+app.get('/html', (req, res) => {
+    res.send('<h1>Hello, this is an HTML response!</h1><p>Welcome to the world of Express.js.</p>');
+})
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 app.use((req, res, next) => {
