@@ -28,7 +28,7 @@ app.get('/html', (req, res) => {
     res.send('<h1>Hello, this is an HTML response!</h1><p>Welcome to the world of Express.js.</p>');
 })
 
-app.get('/predemo', (req, res) => {
+app.get('/demo', (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html lang="en">
